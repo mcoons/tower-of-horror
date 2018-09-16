@@ -1,6 +1,8 @@
 
-function GeneralLights(scene) {
+function Lighting(scene) {
     this.del = false;
+
+	scene.add(new THREE.AmbientLight(0x909090));
 
 	const light = new THREE.PointLight("#ffffff", 1);
 	light.name = "light";

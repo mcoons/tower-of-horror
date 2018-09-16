@@ -8,7 +8,7 @@ function ButtonLeft(scene, pos, callback){
     
     var sprite = new THREE.Sprite( spriteMaterial );
     sprite.scale.set(.75, .75, 1);
-    sprite.position.x = -2;
+    sprite.position.x = -2.3;
     sprite.position.y = pos;
     sprite.position.z = 1;
     sprite.callback = callback;

@@ -3,6 +3,8 @@ function Level(scene, pos){
     this.del = false;
     const level = new THREE.Object3D;
     this.object = level;
+    this.rightRotation = false;
+    this.leftRotation = false;
 
     level.name = "Level"+pos;
     
@@ -16,12 +18,12 @@ function Level(scene, pos){
     }
     
     function rightArrowClick(event){
-        console.log(pos + " Right arrow clicked.");
+        console.log(`Right Level ${pos} clicked.`);
 
     }
 
     function leftArrowClick(event){
-        console.log(pos + " Left arrow clicked.");
+        console.log(`Left Level ${pos} clicked.`);
 
     }
 

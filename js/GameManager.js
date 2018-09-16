@@ -1,24 +1,14 @@
-function SceneManager(canvas) {
+function GameManager(canvas) {
 
-    const materials = [
-        new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true })
-    ];
-    
     const geometries = [
-        new THREE.IcosahedronGeometry(.5, 0),
-        new THREE.IcosahedronGeometry(.5, 1),
-        new THREE.IcosahedronGeometry(.5, 2)
+        new THREE.IcosahedronGeometry(.45, 0),
+        new THREE.IcosahedronGeometry(.45, 1),
+        new THREE.IcosahedronGeometry(.45, 2)
     ];
 
     const clock = new THREE.Clock();
-    const rand = LCG(17191);  // set the seed for the 'rand' function
 
+    const rand = LCG(17191);  // set the seed for the 'rand' function
     const bag = new GrabBag(0,2,2,rand); // min, max, duplicates
  
     const screenDimensions = {
@@ -29,13 +19,13 @@ function SceneManager(canvas) {
     const scene = buildScene();
     const renderer = buildRender(screenDimensions);
     const camera = buildCamera(screenDimensions);
-    var sceneSubjects = createSceneSubjects(scene);
+    var sceneObjects = createSceneObjects(scene);
 
     console.log(scene.children);
 
     function buildScene() {
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#333333");
+        // scene.background = new THREE.Color("#333333");
 
         return scene;
     }
@@ -60,47 +50,46 @@ function SceneManager(canvas) {
         const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
 
         camera.name = "camera";
-        camera.position.set(0,2.5,10);
+        camera.position.set(0,2.5,12);
 
         // console.log(camera);
         return camera;
     }
 
-    function createSceneSubjects(scene) {
-        scene.add(new THREE.AmbientLight(0x909090));
+    function createSceneObjects(scene) {
 
-        const sceneSubjects = [
-            new GeneralLights(scene),
-            new SceneSubject(scene)
-        ];
+        new Background(scene);
+        new Lighting(scene);
+
+        const sceneObjects = [];
 
         let tower = new Tower(scene);
-        sceneSubjects.push(tower);
+        sceneObjects.push(tower);
 
         for (let y = 0; y < 6; y++) {
             let level = new Level(scene, y);
-            sceneSubjects.push(level);
+            sceneObjects.push(level);
             tower.object.add(level.object);
             for (let x = -1; x < 2; x++){
                 for (let z = -1; z < 2; z++){
                     if (x === 0 && z === 0) continue;
                     let gem = new Gem(scene, x,y,z, geometries[1], bag.getRndNumber());
-                    sceneSubjects.push(gem);
+                    sceneObjects.push(gem);
                     level.object.add(gem.object);
                 }
             }
         }
 
-        return sceneSubjects;
+        return sceneObjects;
     }
 
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
-        for(let i=0; i<sceneSubjects.length; i++)
-        	sceneSubjects[i].update(elapsedTime);
+        for(let i=0; i<sceneObjects.length; i++)
+        	sceneObjects[i].update(elapsedTime);
 
-        sceneSubjects = sceneSubjects.filter(
+        sceneObjects = sceneObjects.filter(
             subject => subject.del === false
         )
         renderer.render(scene, camera);
@@ -130,7 +119,7 @@ function SceneManager(canvas) {
     
         raycaster.setFromCamera(mouse, camera);
         var intersects = raycaster.intersectObjects(scene.children, true);
-        (intersects.length > 0) ? intersects[0].object.callback(e) : console.log(sceneSubjects);
+        (intersects.length > 0) ? intersects[0].object.callback(e) : console.log(sceneObjects);
         
     }
 }

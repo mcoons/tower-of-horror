@@ -1,7 +1,7 @@
 
 const canvas = document.getElementById("canvas");
 
-const sceneManager = new SceneManager(canvas);
+const sceneManager = new GameManager(canvas);
 
 bindEventListeners();
 render();
