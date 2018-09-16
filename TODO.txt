@@ -1,0 +1,32 @@
+
+TODO:
+
+Group/parent arrows, backgrounds;
+
+Implement EventBus
+    "Splash", "Pause", "UnPause", "Playing" 
+    "Gem Selected", "Gem Removed", "Animation Start", "Animation End",
+
+Implement ?global? game state: (maybe local through event bus)
+    SplashScreen, Paused, Playing, Loser, Winner, Level#
+
+
+
+CREATE
+    start button
+    pause button
+
+    splashscreen object
+    scoreboard object
+    timer object
+
+
+RESEARCH
+    tween/lerp: falling gems, rotating levels
+    text objects vs HTML text
+    sounds
+    explosions: particles?
+    materials and textures
+    swipe,tap,push for touchscreen
+
+

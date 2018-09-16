@@ -1,16 +1,16 @@
 
 const canvas = document.getElementById("canvas");
 
-const sceneManager = new GameManager(canvas);
+const gameManager = new GameManager(canvas);
 
 bindEventListeners();
+resizeCanvas();	
 render();
 
 function bindEventListeners() {
 	window.onresize = resizeCanvas;
     window.onclick = mainListener;
-
-    resizeCanvas();	
+    window.oncontextmenu = mainListener;
 }
 
 function resizeCanvas() {
@@ -20,14 +20,14 @@ function resizeCanvas() {
 	canvas.width  = canvas.offsetWidth;
 	canvas.height = canvas.offsetHeight;
     
-    sceneManager.onWindowResize();
+    gameManager.onWindowResize();
 }
 
-function mainListener(e){
-    sceneManager.mainListener(e);
+function mainListener(event){
+    gameManager.mainListener(event);
 }
 
 function render() {
-    sceneManager.update();
+    gameManager.update();
     requestAnimationFrame(render);
 }

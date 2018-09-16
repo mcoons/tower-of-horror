@@ -1,4 +1,4 @@
-function ButtonRight(scene, pos, callback){
+function ButtonRight(scene, eventBus, pos, callback){
     var my=this;
     this.del = false;
 

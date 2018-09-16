@@ -1,4 +1,4 @@
-function Tower(scene){
+function Tower(scene, eventBus){
     var my=this;
     this.del = false;
 
@@ -20,12 +20,12 @@ function Tower(scene){
     }
     
     function rightTowerClick(event){
-        console.log("Right Tower clicked.");
+        console.log(`Rotate Tower Right clicked with mouse button ${event.button}`);
 
     }
 
     function leftTowerClick(event){
-        console.log("Left Tower clicked.");
+        console.log(`Rotate Tower Left clicked with mouse button ${event.button}`);
 
     }
 
