@@ -1,9 +1,19 @@
 function Gem(scene, x, y, z, geometry, material){
+    const materials = [
+        new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true })
+    ];
+
     var my=this;
     this.material = material;
     this.del = false;
     this.selected = false;
-    const gem = new THREE.Mesh(geometry, material);
+    const gem = new THREE.Mesh(geometry, materials[material]);
     this.object = gem;
 
     gem.position.set(x,y,z);
@@ -12,10 +22,10 @@ function Gem(scene, x, y, z, geometry, material){
 	scene.add(gem);
 
     this.update = function(time) {
-        gem.rotation.y -=.01;
-        if (gem.rotation.y < -2*Math.PI) {
-            gem.rotation.y = 0;
-        }
+        // gem.rotation.y -=.01;
+        // if (gem.rotation.y < -2*Math.PI) {
+        //     gem.rotation.y = 0;
+        // }
     }
     
     function gemClicked(event){
@@ -25,10 +35,11 @@ function Gem(scene, x, y, z, geometry, material){
             console.log("left click on: " + this.name);
             if (my.selected){
                 my.del = true;
-                scene.remove(gem);
+                // scene.remove(gem);
+                this.parent.remove(gem);
             } else {
                 my.selected = true;
-                gem.material.color.setHex(0xffffff);
+                gem.material = materials[6];
             }
 
         }  

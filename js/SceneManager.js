@@ -3,7 +3,11 @@ function SceneManager(canvas) {
     const materials = [
         new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true }),
         new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true }),
-        new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true })
+        new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true }),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true })
     ];
     
     const geometries = [
@@ -17,8 +21,6 @@ function SceneManager(canvas) {
 
     const bag = new GrabBag(0,2,2,rand); // min, max, duplicates
  
-
-
     const screenDimensions = {
         width: canvas.width,
         height: canvas.height
@@ -65,7 +67,7 @@ function SceneManager(canvas) {
     }
 
     function createSceneSubjects(scene) {
-        scene.add(new THREE.AmbientLight(0xc0c0c0));
+        scene.add(new THREE.AmbientLight(0x909090));
 
         const sceneSubjects = [
             new GeneralLights(scene),
@@ -82,7 +84,7 @@ function SceneManager(canvas) {
             for (let x = -1; x < 2; x++){
                 for (let z = -1; z < 2; z++){
                     if (x === 0 && z === 0) continue;
-                    let gem = new Gem(scene, x,y,z, geometries[1], materials[bag.getRndNumber()]);
+                    let gem = new Gem(scene, x,y,z, geometries[1], bag.getRndNumber());
                     sceneSubjects.push(gem);
                     level.object.add(gem.object);
                 }

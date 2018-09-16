@@ -6,7 +6,8 @@ function Tower(scene){
     tower.name = "Tower Parent";
 
     scene.add(tower);
+
     this.update = function(time) {
-        tower.rotation.y += .01;
+        // tower.rotation.y += .01;
 	}
 }

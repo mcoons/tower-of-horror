@@ -9,6 +9,6 @@ function Level(scene, pos){
     scene.add(level);
 
     this.update = function(time) {
-        level.rotation.y += (pos-3)*.01;
+        // level.rotation.y += (pos-3)*.01;
 	}
 }
