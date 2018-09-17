@@ -1,5 +1,5 @@
 
-function Background(scene) {
+function Background(scene, eventBus) {
     this.del = false;
 
     // bottom
@@ -45,6 +45,8 @@ function Background(scene) {
     }
 
     function backgroundClicked(event){
-        console.log(`Background clicked with mouse button ${event.button}`)
+        console.log(`Background clicked with mouse button ${event.button}`);
+        eventBus.post('clear');
+
     }
 }

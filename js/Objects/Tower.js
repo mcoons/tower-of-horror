@@ -7,16 +7,12 @@ function Tower(scene, eventBus){
     tower.name = "Tower Parent";
 
     scene.add(tower);
-
-    this.update = function(time) {
-        tower.rotation.y += .01;
-    }
     
-    const rightButton = new ButtonRight(scene, -2, rightTowerClick);
-    const leftButton = new ButtonLeft(scene, -2, leftTowerClick);
+    const rightButton = new ButtonRight(scene, eventBus, -2, rightTowerClick);
+    const leftButton = new ButtonLeft(scene, eventBus, -2, leftTowerClick);
 
     this.update = function(time) {
-        // tower.rotation.y += .04;
+        tower.rotation.y -= .01;
     }
     
     function rightTowerClick(event){

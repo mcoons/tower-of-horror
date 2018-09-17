@@ -10,7 +10,7 @@ function GameManager(canvas) {
     const clock = new THREE.Clock();
 
     const rand = LCG(17191);  
-    const bag = new GrabBag(0,2,2,rand); 
+    const bag = new GrabBag(0,2,5,rand); 
  
     const screenDimensions = {
         width: canvas.width,
@@ -61,7 +61,7 @@ function GameManager(canvas) {
 
     function createSceneObjects(scene) {
 
-        new Background(scene);
+        new Background(scene, eventBus);
         new Lighting(scene);
 
         const sceneObjects = [];
@@ -77,7 +77,7 @@ function GameManager(canvas) {
                 for (let z = -1; z < 2; z++){
                     if (x === 0 && z === 0) continue;
                     let rnum = bag.getRndNumber();
-                    let gem = new Gem(scene, eventBus, x,y,z, geometries[rnum], rnum);
+                    let gem = new Gem(scene, eventBus, x,y,z, geometries[2], rnum);
                     sceneObjects.push(gem);
                     level.object.add(gem.object);
                 }
@@ -87,17 +87,15 @@ function GameManager(canvas) {
         return sceneObjects;
     }
 
-
-
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
         for(let i=0; i<sceneObjects.length; i++)
         	sceneObjects[i].update(elapsedTime);
 
-        // let removedObjects = sceneObjects.filter(
-        //     subject => subject.del === true
-        // )
+        let removedObjects = sceneObjects.filter(
+            subject => subject.del === true
+        )
 
         sceneObjects = sceneObjects.filter(
             subject => subject.del === false
@@ -105,8 +103,6 @@ function GameManager(canvas) {
 
         renderer.render(scene, camera);
     }
-
-
 
     this.onWindowResize = function() {
         const { width, height } = canvas;
