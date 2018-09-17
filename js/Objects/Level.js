@@ -37,32 +37,22 @@ function Level(scene, eventBus, pos){
         eventBus.post('clear');
         console.log(`Rotate Level ${pos} Right clicked with mouse button ${event.button}`);
 
-        // if (pos === 2) {
-            level.rotation.y += Math.PI/2;
-            let children = level.children;
-            console.log(children);
-            level.children.forEach(child => { 
-    
-                    // console.log(level.localToWorld( child ));
-                    
-                // child.material = materials[3];
-                // child.position = level.localToWorld( child );
+        level.rotation.y += Math.PI/2;
 
-                // THREE.SceneUtils.detach(child, level, scene);
-                // child.updateMatrixWorld();
-                // THREE.SceneUtils.attach(child, scene, level);
-                // child.updateMatrixWorld();
-    
-                // .attach ( child : Object3D, scene : Object3D, parent : Object3D ) : null
-                // .detach ( child : Object3D, parent : Object3D, scene : Object3D ) : null
-    
-    
-                // THREE.SceneUtils.detach(this.scalerSphere.children[0], this.scalerSphere, scene)
-                // this.scalerSphere.updateMatrixWorld()
-    
-    
-            });
-        // }
+        // let children = level.children;
+        // // console.log(children);
+        // level.children.forEach(child => { 
+
+        //     var vector = new THREE.Vector3();
+        //     vector.setFromMatrixPosition( child.matrixWorld );
+
+        //     if (child.name === "1,0,1")
+        //     {
+        //         console.log(child);
+        //         console.log(vector);
+        //     }
+
+        // });
     }
 
     function leftArrowClick(event){

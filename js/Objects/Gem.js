@@ -15,9 +15,10 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
     this.del = false;
     this.selected = false;
 
-    eventBus.subscribe('clear', clearBusCallback);
-    eventBus.subscribe('selected', selectedBusCallback);
-    eventBus.subscribe('removed', removedBusCallback);
+    // eventBus.subscribe('clear', clearBusCallback);
+    // eventBus.subscribe('selected', selectedBusCallback);
+    // eventBus.subscribe('removed', removedBusCallback);
+    subscribe();
 
     const gem = new THREE.Mesh(geometry, materials[material]);
     this.object = gem;
@@ -35,33 +36,46 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
     }
     
     function gemClicked(event){
-        if (this.position.z < .5){ console.log("NOT ON FRONT PLANE!!"); return };
 
-        // eventBus.post('clear', my.material, my.object.position);
+        var worldPosition = new THREE.Vector3();
+        worldPosition.setFromMatrixPosition( this.matrixWorld );
+
+        if (worldPosition.z < .5){ console.log("NOT ON FRONT PLANE!!"); return };
     
         if (event.button === 0){
             console.log(`Left click on: ${this.name} with mouse button ${event.button}`);
             if (my.selected){
+                unsubscribe();
+                // eventBus.unsubscribe('clear', clearBusCallback);
+                // eventBus.unsubscribe('selected', selectedBusCallback);
+                // eventBus.unsubscribe('removed', removedBusCallback);         
+
                 my.del = true;
                 this.parent.remove(gem);
 
-                eventBus.post('removed', my.material, this.position);
+
+                eventBus.post('removed', my.material, worldPosition);
             } else {
-                eventBus.post('clear', my.material, my.object.position);
+                eventBus.post('clear', my.material, worldPosition);
 
                 my.selected = true;
                 gem.material = materials[6]; // material to white
-                console.log(`selected - ${my.material} ${this.name}`);                        
-                eventBus.post('selected', my.material, this.position);
+                // console.log(`selected - ${my.material} ${this.name}`);                        
+                eventBus.post('selected', my.material, worldPosition);
             }
 
-        }  else {
+        } else {
             console.log(`Right click on: ${this.name} with mouse button ${event.button}`);
         }
     }
 
     function clearBusCallback(eventType, material, position){
-        if (my.object.position === position) return; // it was my message or I was already processed
+        var worldPosition = new THREE.Vector3();
+        worldPosition.setFromMatrixPosition( my.object.matrixWorld );
+
+
+
+        if (worldPosition === position) return; // it was my message or I was already processed
 
         my.selected = false;
         gem.material = materials[my.material];
@@ -69,24 +83,32 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
 
     function selectedBusCallback(eventType, material, position){
 
-        // console.log(arg1, arg2, my.object.position);
+        var worldPosition = new THREE.Vector3();
+        worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
-        if (my.object.position === position || my.selected) return; // it was my message or I was already processed
+        if (worldPosition === position || my.selected) return; // it was my message or I was already processed
 
-        if (my.material === material && distance(my.object.position, position) < 1.05){
+        if (my.material === material && distance(worldPosition, position) < 1.05){
             my.selected = true;
             gem.material = materials[6]; // material to white
-            console.log(`selected - ${my.material} ${my.object.name}`);                        
-            eventBus.post('selected', my.material, my.object.position);                       
+            // console.log(`selected - ${my.material} ${my.object.name}`);                        
+            eventBus.post('selected', my.material, worldPosition);                       
         }
     }
 
     function removedBusCallback(eventType, material, position){
-        if (my.object.position === position) return; // it was my message or I was already processed
 
+        var worldPosition = new THREE.Vector3();
+        worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
+        if (worldPosition === position) return; // it was my message or I was already processed
 
         if (my.selected){
+            // eventBus.unsubscribe('clear', clearBusCallback);
+            // eventBus.unsubscribe('selected', selectedBusCallback);
+            // eventBus.unsubscribe('removed', removedBusCallback);    
+            unsubscribe();
+
             my.del = true;
             gem.parent.remove(gem);
         }
@@ -94,10 +116,22 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
     }
 
     function distance(p1,p2){
-            var dx = p1.x - p2.x; 
-            var dy = p1.y - p2.y; 
-            var dz = p1.z - p2.z; 
-            return Math.sqrt(dx*dx+dy*dy+dz*dz); 
-          }
+        var dx = p1.x - p2.x; 
+        var dy = p1.y - p2.y; 
+        var dz = p1.z - p2.z; 
+        return Math.sqrt(dx*dx+dy*dy+dz*dz); 
+    }
+
+    function subscribe(){
+        eventBus.subscribe('clear', clearBusCallback);
+        eventBus.subscribe('selected', selectedBusCallback);
+        eventBus.subscribe('removed', removedBusCallback);
+    }
+
+    function unsubscribe(){
+        eventBus.unsubscribe('clear', clearBusCallback);
+        eventBus.unsubscribe('selected', selectedBusCallback);
+        eventBus.unsubscribe('removed', removedBusCallback);    
+    }
     
 }

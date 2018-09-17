@@ -54,7 +54,6 @@ function GameManager(canvas) {
         camera.name = "camera";
         camera.position.set(0,2.5,12);
 
-        // console.log(camera);
         return camera;
     }
 
