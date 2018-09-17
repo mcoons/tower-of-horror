@@ -12,16 +12,18 @@ function Tower(scene, eventBus){
     const leftButton = new ButtonLeft(scene, eventBus, -2, leftTowerClick);
 
     this.update = function(time) {
-        tower.rotation.y -= .01;
+        // tower.rotation.y -= .01;
     }
     
     function rightTowerClick(event){
         console.log(`Rotate Tower Right clicked with mouse button ${event.button}`);
+        tower.rotation.y += Math.PI/2;
 
     }
 
     function leftTowerClick(event){
         console.log(`Rotate Tower Left clicked with mouse button ${event.button}`);
+        tower.rotation.y -= Math.PI/2;
 
     }
 

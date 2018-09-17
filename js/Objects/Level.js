@@ -1,4 +1,16 @@
 function Level(scene, eventBus, pos){
+    const materials = [
+        new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
+        new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
+        new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
+        new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
+        new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 }),
+
+    ];
+
+
     var my=this;
     this.del = false;
     this.rightRotation = false;
@@ -14,21 +26,51 @@ function Level(scene, eventBus, pos){
     const leftButton = new ButtonLeft(scene, eventBus, pos, leftArrowClick);
 
     this.update = function(time) {
-        if (pos > 2)
-        level.rotation.y += (pos-2)*.01;
-        if (level.rotation > Math.PI*2){
-            level.rotation = 0;
-        }
+        // if (pos > 2)
+        // level.rotation.y += (pos-2)*.01;
+        // if (level.rotation > Math.PI*2){
+        //     level.rotation = 0;
+        // }
     }
     
     function rightArrowClick(event){
         eventBus.post('clear');
         console.log(`Rotate Level ${pos} Right clicked with mouse button ${event.button}`);
+
+        // if (pos === 2) {
+            level.rotation.y += Math.PI/2;
+            let children = level.children;
+            console.log(children);
+            level.children.forEach(child => { 
+    
+                    // console.log(level.localToWorld( child ));
+                    
+                // child.material = materials[3];
+                // child.position = level.localToWorld( child );
+
+                // THREE.SceneUtils.detach(child, level, scene);
+                // child.updateMatrixWorld();
+                // THREE.SceneUtils.attach(child, scene, level);
+                // child.updateMatrixWorld();
+    
+                // .attach ( child : Object3D, scene : Object3D, parent : Object3D ) : null
+                // .detach ( child : Object3D, parent : Object3D, scene : Object3D ) : null
+    
+    
+                // THREE.SceneUtils.detach(this.scalerSphere.children[0], this.scalerSphere, scene)
+                // this.scalerSphere.updateMatrixWorld()
+    
+    
+            });
+        // }
     }
 
     function leftArrowClick(event){
         eventBus.post('clear');
         console.log(`Rotate Level ${pos} Left clicked with mouse button ${event.button}`);
+
+        level.rotation.y -= Math.PI/2;
+
 
     }
 
