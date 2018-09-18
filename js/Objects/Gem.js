@@ -16,9 +16,7 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
     this.selected = false;
     this.name = x + "," + y + "," + z;
 
-
     var selectedCount = 0;
-
     
     const gem = new THREE.Mesh(geometry, materials[material]);
     this.object = gem;

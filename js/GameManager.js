@@ -32,7 +32,8 @@ function GameManager(canvas) {
         return scene;
     }
 
-    eventBus.subscribe("info", infoBusCallback);
+    // eventBus.subscribe("info", infoBusCallback);
+    eventBus.subscribe("info", columnInfoBusCallback);
 
     // var listener = new THREE.AudioListener();
     // var audioLoader = new THREE.AudioLoader();
@@ -121,6 +122,58 @@ function GameManager(canvas) {
         console.log("--- eventBus info ---");
         console.log(eventBus.eventObjects);
     }
+
+    function columnInfoBusCallback(){
+        console.log("--- sceneObject info ---");
+        console.log(sceneObjects);
+
+//        let tower = sceneObjects.filter( obj => obj.name = "Tower");
+        let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
+
+
+        // console.log("--- tower ---");
+        // console.log(tower);
+        let levels = tower.object.children;
+        // console.log("--- levels ---");
+        // console.log(levels);
+
+
+        let columns = {
+            "-1,-1": [],
+            "-1,0": [],
+            "-1,1": [],
+            "0,-1": [],
+            "0,0": [],
+            "0,1": [],
+            "1,-1": [],
+            "1,0": [],
+            "1,1": []
+            
+        };
+
+        levels.forEach( (level, index) => {
+        for (let x = -1; x < 2; x++ ){
+            for (let z = -1; z < 2; z++){
+                if (x === 0 && z === 0) continue;
+
+                let children = level.children;
+                // console.log("--- children ---");
+                // console.log(children);
+                let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
+                // console.log(`--- column ${x} ${z} ---`);
+                // console.log(columnData);
+                if (columnData[0]) columns[x+','+z].push(columnData[0]);
+                
+            }  // z
+        } // x
+    }) // foreach
+    console.log('--- columns ---');
+    console.log(columns);
+        
+        
+
+    }
+
 
 
     this.onWindowResize = function() {

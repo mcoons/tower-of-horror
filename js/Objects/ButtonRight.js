@@ -1,4 +1,4 @@
-function ButtonRight(scene, eventBus, pos, callback){
+function ButtonRight(scene, eventBus, level, callback){
     var my=this;
     this.del = false;
 
@@ -9,18 +9,15 @@ function ButtonRight(scene, eventBus, pos, callback){
     var sprite = new THREE.Sprite( spriteMaterial );
     sprite.scale.set(.75, .75, 1);
     sprite.position.x = 2.3;
-    sprite.position.y = pos;
+    sprite.position.y = level;
     sprite.position.z = 1;
     sprite.callback = callback;
-    sprite.name = "Right Arrow "+pos;
+    sprite.name = "Right Arrow "+level;
 
     scene.add( sprite );
 
     this.update = function(time) {
 
     }
-    
-
-
 
 }

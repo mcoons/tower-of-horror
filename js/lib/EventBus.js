@@ -61,7 +61,6 @@ function EventBus() {
 
         // if the callbacks array is now empty then remove the eventObject 
         // from the this.eventObjects array 
-
         var eventObject = this.eventObjects.filter(function (eventObject) { return eventObject.eventType === eventType; })[0];
         if (eventObject.callbacks.length === 0){
             this.eventObjects = this.eventObjects.filter(function (eventObject) { return eventObject.eventType != eventType; })

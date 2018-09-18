@@ -23,17 +23,24 @@ function Tower(scene, eventBus){
     this.update = function(time) {
         // tower.rotation.y -= .01;
         if (this.rotating){
-            console.log("rotating");
+            // console.log("rotating");
             let elapsed = (new Date()).getTime() / 1000 - this.rotationStartTime;
-            if ( elapsed >= this.rotationLength ) this.rotating = false;
+            if ( elapsed >= this.rotationLength ) {
+                this.rotating = false;
+                tower.rotation.y = this.endRotation;
+                return;
+            }
             // x = A + t * (B - A)
 
-            let newRot = this.startRotation + elapsed * (this.endRotation - this.startRotation) * 2;
+            let newRot = this.startRotation + elapsed * (this.endRotation - this.startRotation) * (1/this.rotationLength);
             tower.rotation.y = newRot;
         }    
     }
     
     function rightTowerClick(event){
+        if (my.rotating) return; 
+
+        
         // console.log(`Rotate Tower Right clicked with mouse button ${event.button}`);
         // tower.rotation.y += Math.PI/2;
 
@@ -46,6 +53,8 @@ function Tower(scene, eventBus){
     }
 
     function leftTowerClick(event){
+        if (my.rotating) return; 
+
         // console.log(`Rotate Tower Left clicked with mouse button ${event.button}`);
         // tower.rotation.y -= Math.PI/2;
 

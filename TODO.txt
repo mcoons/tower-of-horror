@@ -22,7 +22,7 @@ CREATE
 
 
 RESEARCH
-    tween/lerp: falling gems, rotating levels
+    tween/lerp: falling gems, rotating levels - DONE
     text objects vs HTML text
     sounds
     explosions: particles?
