@@ -1,5 +1,5 @@
-function Gem(scene, eventBus, x, y, z, geometry, material){
-    const materials = [
+function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
+        const materials = [
         new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
         new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
         new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
@@ -15,6 +15,15 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
     this.del = false;
     this.selected = false;
     this.name = x + "," + y + "," + z;
+
+    this.dropping = false;
+
+    this.startDropping = null;
+    this.endDropping = null;
+
+    this.droppingStartTime = null;
+
+    this.droppingLength = .5;
 
     var selectedCount = 0;
     
@@ -32,23 +41,33 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
     subscribe();
 
     this.update = function(time) {
-        // gem.rotation.y -=.01;
-        // if (gem.rotation.y < -2*Math.PI) {
-        //     gem.rotation.y = 0;
-        // }
+        gem.rotation.y -=.01;
+        if (gem.rotation.y < -2*Math.PI) {
+            gem.rotation.y = 0;
+        }
 
         var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
-        gem.name = Math.round( worldPosition.x ) + "," + Math.round( worldPosition.y ) + "," + Math.round( worldPosition.z );
-        this.name = Math.round( worldPosition.x ) + "," + Math.round( worldPosition.y ) + "," + Math.round( worldPosition.z );
-        
+        let newName = Math.round( worldPosition.x ) + "," + Math.round( worldPosition.y ) + "," + Math.round( worldPosition.z );
+        gem.name = newName;
+        this.name = newName;
 
+        if (this.dropping){
+            let elapsed = (new Date()).getTime() / 1000 - this.droppingStartTime;
+            if ( elapsed >= this.droppingLength ) {
+                this.dropping = false;
+                gem.position.y = this.endDropping;
+                return;
+            }
+            // x = A + t * (B - A)
 
+            let newPos = this.startDropping + elapsed * (this.endDropping - this.startDropping) * ( 1/ this.droppingLength);
+            gem.position.y = newPos;
+        }
     }
     
     function gemClicked(event){
-
 
         var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( this.matrixWorld );
@@ -66,9 +85,6 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
                 eventBus.post('removed', my.material, worldPosition);
             } else if (my.selected && selectedCount === 1){
                 console.log("EEEERRRRRPPPP")
-
-
-
             } else {
                 eventBus.post('clear', my.material, worldPosition);
 
@@ -76,19 +92,31 @@ function Gem(scene, eventBus, x, y, z, geometry, material){
                 gem.material = materials[6]; // material to white
                 // console.log(`selected - ${my.material} ${this.name}`);                        
                 eventBus.post('selected', my.material, worldPosition);
-
             }
-
         } else {
             console.log(`Right click on: ${this.name} with mouse button ${event.button}`);
         }
-
         console.log("selected = ",selectedCount);
     }
 
-    function myChannelBusCallback(){
+    function myChannelBusCallback(eventType, message, value){
+        switch (message) {
+            case 'moveto':
+                console.log(my.name, "needs to move to",value);
 
-
+                if (my.dropping) return; 
+        
+                my.dropping = true;
+                my.droppingStartTime = (new Date()).getTime() / 1000;
+                my.startDropping = gem.position.y;
+                my.endDropping = value;
+                
+            break;
+        
+            default:
+                console.log("Unknown personal message.")
+            break;
+        }
     }
 
     function clearBusCallback(eventType, material, position){

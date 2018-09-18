@@ -7,6 +7,8 @@ function GameManager(canvas) {
         new THREE.IcosahedronGeometry(.45, 2)
     ];
 
+    const levelObjects = [];
+
     const clock = new THREE.Clock();
 
     const rand = LCG(17191);  
@@ -81,19 +83,22 @@ function GameManager(canvas) {
 
         for (let y = 0; y < 6; y++) {
             let level = new Level(scene, eventBus, y);
+            levelObjects.push(level);
             sceneObjects.push(level);
             tower.object.add(level.object);
             for (let x = -1; x < 2; x++){
                 for (let z = -1; z < 2; z++){
                     if (x === 0 && z === 0) continue;
                     let rnum = bag.getRndNumber();
-                    let gem = new Gem(scene, eventBus, x,y,z, geometries[2], rnum);
+                    let gem = new Gem(scene, eventBus, levelObjects, x,y,z, geometries[2], rnum);
                     sceneObjects.push(gem);
                     level.object.add(gem.object);
                 }
             }
         }
 
+        console.log("--- levelObjects ---");
+        console.log(levelObjects);
         return sceneObjects;
     }
 
@@ -127,9 +132,8 @@ function GameManager(canvas) {
         console.log("--- sceneObject info ---");
         console.log(sceneObjects);
 
-//        let tower = sceneObjects.filter( obj => obj.name = "Tower");
+        // let tower = sceneObjects.filter( obj => obj.name = "Tower");
         let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
-
 
         // console.log("--- tower ---");
         // console.log(tower);
@@ -137,44 +141,48 @@ function GameManager(canvas) {
         // console.log("--- levels ---");
         // console.log(levels);
 
-
         let columns = {
             "-1,-1": [],
             "-1,0": [],
             "-1,1": [],
             "0,-1": [],
-            "0,0": [],
+            // "0,0": [],
             "0,1": [],
             "1,-1": [],
             "1,0": [],
             "1,1": []
-            
         };
 
         levels.forEach( (level, index) => {
-        for (let x = -1; x < 2; x++ ){
-            for (let z = -1; z < 2; z++){
-                if (x === 0 && z === 0) continue;
+            for (let x = -1; x < 2; x++ ){
+                for (let z = -1; z < 2; z++){
+                    if (x === 0 && z === 0) continue;
 
-                let children = level.children;
-                // console.log("--- children ---");
-                // console.log(children);
-                let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
-                // console.log(`--- column ${x} ${z} ---`);
-                // console.log(columnData);
-                if (columnData[0]) columns[x+','+z].push(columnData[0]);
+                    let children = level.children;
+                    // console.log("--- children ---");
+                    // console.log(children);
+                    let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
+                    // console.log(`--- column ${x} ${z} ---`);
+                    // console.log(columnData);
+                    if (columnData[0]) columns[x+','+z].push(columnData[0]);
                 
-            }  // z
-        } // x
-    }) // foreach
-    console.log('--- columns ---');
-    console.log(columns);
-        
-        
+                }  // z
+            } // x
+        }) // foreach
+        // console.log('--- columns ---');
+        // console.log(columns);
+            
+        for (var key in columns) {
+            // skip loop if the property is from prototype
+            if (!columns.hasOwnProperty(key)) continue;
 
+            // console.log("-key-");
+            // console.log(columns[key]);
+
+            columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
+            // columns[key].forEach( (element, index) => console.log(  element.uuid, "moveto", index));
+        }        
     }
-
-
 
     this.onWindowResize = function() {
         const { width, height } = canvas;
