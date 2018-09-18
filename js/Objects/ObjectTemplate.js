@@ -5,7 +5,7 @@ function ObjectTemplate(scene){
     // Used to delete from GameManagers update array
     this.del = false;  
 
-    mesh=THREE.mesh...;
+    // mesh=THREE.mesh...;
 
     // Callback when mesh is clicked     
     mesh.callback = callback;  

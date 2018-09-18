@@ -10,7 +10,7 @@ function GameManager(canvas) {
     const clock = new THREE.Clock();
 
     const rand = LCG(17191);  
-    const bag = new GrabBag(0,2,5,rand); 
+    const bag = new GrabBag(0,1,5,rand); 
  
     const screenDimensions = {
         width: canvas.width,
@@ -32,6 +32,12 @@ function GameManager(canvas) {
         return scene;
     }
 
+    eventBus.subscribe("info", infoBusCallback);
+
+    // var listener = new THREE.AudioListener();
+    // var audioLoader = new THREE.AudioLoader();
+
+
     function buildRender({ width, height }) {
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); 
         const DPR = (window.devicePixelRatio) ? window.devicePixelRatio : 1;
@@ -41,8 +47,12 @@ function GameManager(canvas) {
         renderer.gammaInput = true;
         renderer.gammaOutput = true; 
 
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
         return renderer;
     }
+
 
     function buildCamera({ width, height }) {
         const aspectRatio = width / height;
@@ -61,9 +71,9 @@ function GameManager(canvas) {
     function createSceneObjects(scene) {
 
         new Background(scene, eventBus);
-        new Lighting(scene);
+        // new Lighting(scene);
 
-        const sceneObjects = [];
+        const sceneObjects = [ new Lighting(scene)];
 
         let tower = new Tower(scene, eventBus);
         sceneObjects.push(tower);
@@ -102,6 +112,16 @@ function GameManager(canvas) {
 
         renderer.render(scene, camera);
     }
+
+    function infoBusCallback(){
+        console.log("--- sceneObject info ---");
+        // sceneObjects.forEach( object => console.log(object) );
+        console.log(sceneObjects);
+
+        console.log("--- eventBus info ---");
+        console.log(eventBus.eventObjects);
+    }
+
 
     this.onWindowResize = function() {
         const { width, height } = canvas;
