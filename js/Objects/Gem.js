@@ -10,6 +10,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
     ];
 
+    var animationInProgress = false;
+
     var my=this;
     this.material = material;
     this.del = false;
@@ -20,9 +22,7 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
     this.startDropping = null;
     this.endDropping = null;
-
     this.droppingStartTime = null;
-
     this.droppingLength = .5;
 
     var selectedCount = 0;
@@ -58,16 +58,32 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
             if ( elapsed >= this.droppingLength ) {
                 this.dropping = false;
                 gem.position.y = this.endDropping;
+                eventBus.post('animationEnded');
+
+
+                var worldPosition = new THREE.Vector3();
+                worldPosition.setFromMatrixPosition( my.object.matrixWorld );
+
+//     function newGemBusCallback(eventType, material, position){
+
+                eventBus.post("newGem", my.material, my.object.position, worldPosition);
+                unsubscribe();      
+
+                my.del = true;
+                my.object.parent.remove(gem);
+
                 return;
             }
             // x = A + t * (B - A)
 
             let newPos = this.startDropping + elapsed * (this.endDropping - this.startDropping) * ( 1/ this.droppingLength);
             gem.position.y = newPos;
-        }
+        } // end if dropping
     }
     
     function gemClicked(event){
+
+        if (animationInProgress) return;
 
         var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( this.matrixWorld );
@@ -83,6 +99,7 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
                 this.parent.remove(gem);
 
                 eventBus.post('removed', my.material, worldPosition);
+                eventBus.post('dropGems');
             } else if (my.selected && selectedCount === 1){
                 console.log("EEEERRRRRPPPP")
             } else {
@@ -104,7 +121,9 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
             case 'moveto':
                 console.log(my.name, "needs to move to",value);
 
-                if (my.dropping) return; 
+                if (my.dropping || Math.round(my.object.position.y) === value) return; 
+
+                eventBus.post('animationStarting');
         
                 my.dropping = true;
                 my.droppingStartTime = (new Date()).getTime() / 1000;
@@ -132,6 +151,9 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
     }
 
     function selectedBusCallback(eventType, material, position){
+
+        var animationInProgress = false;
+
         selectedCount++;
 
         var worldPosition = new THREE.Vector3();
@@ -166,6 +188,17 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
     }
 
+
+    function animationStartingBusCallback(){
+        animationInProgress = true
+    }
+
+
+    function animationEndedBusCallback(){
+        animationInProgress = false;
+    }
+
+
     function distance(p1,p2){
         var dx = p1.x - p2.x; 
         var dy = p1.y - p2.y; 
@@ -178,6 +211,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         eventBus.subscribe('selected', selectedBusCallback);
         eventBus.subscribe('removed', removedBusCallback);
         eventBus.subscribe(my.id, myChannelBusCallback);
+        eventBus.subscribe('animationStarting', animationStartingBusCallback);
+        eventBus.subscribe('animationEnded', animationEndedBusCallback);
     }
 
     function unsubscribe(){
@@ -185,6 +220,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         eventBus.unsubscribe('selected', selectedBusCallback);
         eventBus.unsubscribe('removed', removedBusCallback);  
         eventBus.unsubscribe(my.id, myChannelBusCallback);
+        eventBus.unsubscribe('animationStarting', animationStartingBusCallback);
+        eventBus.unsubscribe('animationEnded', animationEndedBusCallback);
   
     }
     

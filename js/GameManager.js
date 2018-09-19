@@ -7,19 +7,24 @@ function GameManager(canvas) {
         new THREE.IcosahedronGeometry(.45, 2)
     ];
 
+    const height = 6;
+
     const levelObjects = [];
 
     const clock = new THREE.Clock();
 
     const rand = LCG(17191);  
-    const bag = new GrabBag(0,1,5,rand); 
+    const bag = new GrabBag(0,3,5,rand); 
  
     const screenDimensions = {
         width: canvas.width,
         height: canvas.height
     }
-    
+
+
     const scene = buildScene();
+    window.scene = scene;
+
     const renderer = buildRender(screenDimensions);
     const camera = buildCamera(screenDimensions);
     var eventBus = new EventBus();
@@ -36,6 +41,8 @@ function GameManager(canvas) {
 
     // eventBus.subscribe("info", infoBusCallback);
     eventBus.subscribe("info", columnInfoBusCallback);
+    eventBus.subscribe("newGem", newGemBusCallback);
+    eventBus.subscribe("dropGems", dropGemsBusCallback);
 
     // var listener = new THREE.AudioListener();
     // var audioLoader = new THREE.AudioLoader();
@@ -81,7 +88,7 @@ function GameManager(canvas) {
         let tower = new Tower(scene, eventBus);
         sceneObjects.push(tower);
 
-        for (let y = 0; y < 6; y++) {
+        for (let y = 0; y < height; y++) {
             let level = new Level(scene, eventBus, y);
             levelObjects.push(level);
             sceneObjects.push(level);
@@ -105,18 +112,92 @@ function GameManager(canvas) {
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
-        for(let i=0; i<sceneObjects.length; i++)
+        for(let i=0; i<sceneObjects.length; i++){
         	sceneObjects[i].update(elapsedTime);
+        }
 
         let removedObjects = sceneObjects.filter(
             subject => subject.del === true
-        )
+        );
 
         sceneObjects = sceneObjects.filter(
             subject => subject.del === false
-        )
+        );
 
         renderer.render(scene, camera);
+    }
+
+    function newGemBusCallback(eventType, material, localPosition, globalPosition){
+        let position = levelObjects[Math.round(globalPosition.y)].object.worldToLocal(globalPosition);
+
+        let gem = new Gem(scene, eventBus, levelObjects, Math.round(position.x), Math.round(position.y), Math.round(position.z), geometries[2], material);
+        sceneObjects.push(gem);
+        levelObjects[Math.round(globalPosition.y)].object.add(gem.object);
+    } 
+
+    function infoBusCallback(){
+        console.log("--- sceneObject info ---");
+        // sceneObjects.forEach( object => console.log(object) );
+        console.log(sceneObjects);
+
+        console.log("--- eventBus info ---");
+        console.log(eventBus.eventObjects);
+    }
+
+    function dropGemsBusCallback(){
+        console.log("--- sceneObject info ---");
+        console.log(sceneObjects);
+
+        // let tower = sceneObjects.filter( obj => obj.name = "Tower");
+        let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
+
+        // console.log("--- tower ---");
+        // console.log(tower);
+        let levels = tower.object.children;
+        // console.log("--- levels ---");
+        // console.log(levels);
+
+        let columns = {
+            "-1,-1": [],
+            "-1,0": [],
+            "-1,1": [],
+            "0,-1": [],
+            "0,0": [],
+            "0,1": [],
+            "1,-1": [],
+            "1,0": [],
+            "1,1": []
+        };
+
+        levels.forEach( (level, index) => {
+            for (let x = -1; x < 2; x++ ){
+                for (let z = -1; z < 2; z++){
+                    if (x === 0 && z === 0) continue;
+
+                    let children = level.children;
+                    // console.log("--- children ---");
+                    // console.log(children);
+                    let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
+                    // console.log(`--- column ${x} ${z} ---`);
+                    // console.log(columnData);
+                    if (columnData[0]) columns[x+','+z].push(columnData[0]);
+                
+                }  // z
+            } // x
+        }) // foreach
+        // console.log('--- columns ---');
+        // console.log(columns);
+            
+        for (var key in columns) {
+            // skip loop if the property is from prototype
+            if (!columns.hasOwnProperty(key)) continue;
+
+            // console.log("-key-");
+            // console.log(columns[key]);
+
+            columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
+            // columns[key].forEach( (element, index) => console.log(  element.uuid, "moveto", index));
+        }        
     }
 
     function infoBusCallback(){
@@ -146,7 +227,7 @@ function GameManager(canvas) {
             "-1,0": [],
             "-1,1": [],
             "0,-1": [],
-            // "0,0": [],
+            "0,0": [],
             "0,1": [],
             "1,-1": [],
             "1,0": [],

@@ -1,4 +1,9 @@
 function Tower(scene, eventBus){
+    var animationInProgress = false;
+
+    eventBus.subscribe('animationStarting', animationStartingBusCallback);
+    eventBus.subscribe('animationEnded', animationEndedBusCallback);
+
     var my=this;
     this.del = false;
 
@@ -28,6 +33,8 @@ function Tower(scene, eventBus){
             if ( elapsed >= this.rotationLength ) {
                 this.rotating = false;
                 tower.rotation.y = this.endRotation;
+
+                eventBus.post('animationEnded');
                 return;
             }
             // x = A + t * (B - A)
@@ -36,8 +43,21 @@ function Tower(scene, eventBus){
             tower.rotation.y = newRot;
         }    
     }
+
+
+    function animationStartingBusCallback(){
+        animationInProgress = true
+    }
+
+
+    function animationEndedBusCallback(){
+        animationInProgress = false;
+    }
     
     function rightTowerClick(event){
+        if (animationInProgress) return;
+        eventBus.post('animationStarting');
+
         if (my.rotating) return; 
 
         
@@ -53,6 +73,9 @@ function Tower(scene, eventBus){
     }
 
     function leftTowerClick(event){
+        if (animationInProgress) return;
+        eventBus.post('animationStarting');
+
         if (my.rotating) return; 
 
         // console.log(`Rotate Tower Left clicked with mouse button ${event.button}`);

@@ -1,6 +1,11 @@
 
 function Level(scene, eventBus, pos){
 
+    var animationInProgress = false;
+
+    eventBus.subscribe('animationStarting', animationStartingBusCallback);
+    eventBus.subscribe('animationEnded', animationEndedBusCallback);
+
     var my=this;
     this.del = false;
     
@@ -25,6 +30,9 @@ function Level(scene, eventBus, pos){
             if ( elapsed >= this.rotationLength ) {
                 this.rotating = false;
                 level.rotation.y = this.endRotation;
+                eventBus.post('animationEnded');
+
+                eventBus.post('dropGems');
                 return;
             }
             // x = A + t * (B - A)
@@ -34,8 +42,21 @@ function Level(scene, eventBus, pos){
         }
 
     }
+
+
+    function animationStartingBusCallback(){
+        animationInProgress = true
+    }
+
+
+    function animationEndedBusCallback(){
+        animationInProgress = false;
+    }
     
     function rightArrowClick(event){
+        if (animationInProgress) return;
+        eventBus.post('animationStarting');
+
         if (my.rotating) return; 
 
         eventBus.post('clear');
@@ -49,6 +70,9 @@ function Level(scene, eventBus, pos){
     }
 
     function leftArrowClick(event){
+        if (animationInProgress) return;
+        eventBus.post('animationStarting');
+
         if (my.rotating) return; 
 
         eventBus.post('clear');
