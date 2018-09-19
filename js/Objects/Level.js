@@ -40,7 +40,6 @@ function Level(scene, eventBus, pos){
             let newRot = this.startRotation + elapsed * (this.endRotation - this.startRotation) * ( 1/ this.rotationLength);
             level.rotation.y = newRot;
         }
-
     }
 
 
@@ -60,13 +59,11 @@ function Level(scene, eventBus, pos){
         if (my.rotating) return; 
 
         eventBus.post('clear');
-        // console.log(`Rotate Level ${pos} Right clicked with mouse button ${event.button}`);
 
         my.rotating = true;
         my.rotationStartTime = (new Date()).getTime() / 1000;
         my.startRotation = level.rotation.y;
         my.endRotation = level.rotation.y + Math.PI/2;
-
     }
 
     function leftArrowClick(event){
@@ -76,13 +73,11 @@ function Level(scene, eventBus, pos){
         if (my.rotating) return; 
 
         eventBus.post('clear');
-        // console.log(`Rotate Level ${pos} Left clicked with mouse button ${event.button}`);
 
         my.rotating = true;
         my.rotationStartTime = (new Date()).getTime() / 1000;
         my.startRotation = level.rotation.y;
         my.endRotation = level.rotation.y - Math.PI/2;
-
     }
 
 }

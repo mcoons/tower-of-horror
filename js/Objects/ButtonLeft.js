@@ -16,8 +16,6 @@ function ButtonLeft(scene, eventBus, level, callback){
 
     scene.add( sprite );
 
-    this.update = function(time) {
-
-    }
+    this.update = function(time) {}
     
 }

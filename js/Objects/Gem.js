@@ -7,7 +7,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
         new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
         new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 }),
-
     ];
 
     var animationInProgress = false;
@@ -19,7 +18,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
     this.name = x + "," + y + "," + z;
 
     this.dropping = false;
-
     this.startDropping = null;
     this.endDropping = null;
     this.droppingStartTime = null;
@@ -35,8 +33,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
     gem.callback = gemClicked;
     gem.name = x + "," + y + "," + z;
     scene.add(gem);
-    // gem.castShadow = true; //default is false
-    // gem.receiveShadow = false; //default
   
     subscribe();
 
@@ -60,11 +56,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
                 gem.position.y = this.endDropping;
                 eventBus.post('animationEnded');
 
-
                 var worldPosition = new THREE.Vector3();
                 worldPosition.setFromMatrixPosition( my.object.matrixWorld );
-
-//     function newGemBusCallback(eventType, material, position){
 
                 eventBus.post("newGem", my.material, my.object.position, worldPosition);
                 unsubscribe();      
@@ -91,7 +84,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         if (worldPosition.z < .5){ console.log("NOT ON FRONT PLANE!!"); return };
     
         if (event.button === 0){
-            console.log(`Left click on: ${this.name} with mouse button ${event.button}`);
             if (my.selected && selectedCount > 1){
                 unsubscribe();      
 
@@ -107,20 +99,17 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
                 my.selected = true;
                 gem.material = materials[6]; // material to white
-                // console.log(`selected - ${my.material} ${this.name}`);                        
                 eventBus.post('selected', my.material, worldPosition);
             }
         } else {
             console.log(`Right click on: ${this.name} with mouse button ${event.button}`);
         }
-        console.log("selected = ",selectedCount);
+        // console.log("selected = ",selectedCount);
     }
 
     function myChannelBusCallback(eventType, message, value){
         switch (message) {
             case 'moveto':
-                console.log(my.name, "needs to move to",value);
-
                 if (my.dropping || Math.round(my.object.position.y) === value) return; 
 
                 eventBus.post('animationStarting');
@@ -164,7 +153,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         if (my.material === material && distance(worldPosition, position) < 1.05){
             my.selected = true;
             gem.material = materials[6]; // material to white
-            // console.log(`selected - ${my.material} ${my.object.name}`);                        
             eventBus.post('selected', my.material, worldPosition);                       
         }
     }
@@ -175,8 +163,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
         var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( my.object.matrixWorld );
-
-        // if (worldPosition === position) return; // it was my message or I was already processed
 
         if (my.selected){
 
@@ -222,7 +208,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         eventBus.unsubscribe(my.id, myChannelBusCallback);
         eventBus.unsubscribe('animationStarting', animationStartingBusCallback);
         eventBus.unsubscribe('animationEnded', animationEndedBusCallback);
-  
     }
     
 }

@@ -40,13 +40,9 @@ function GameManager(canvas) {
     }
 
     // eventBus.subscribe("info", infoBusCallback);
-    eventBus.subscribe("info", columnInfoBusCallback);
+    // eventBus.subscribe("info", columnInfoBusCallback);
     eventBus.subscribe("newGem", newGemBusCallback);
     eventBus.subscribe("dropGems", dropGemsBusCallback);
-
-    // var listener = new THREE.AudioListener();
-    // var audioLoader = new THREE.AudioLoader();
-
 
     function buildRender({ width, height }) {
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); 
@@ -81,7 +77,6 @@ function GameManager(canvas) {
     function createSceneObjects(scene) {
 
         new Background(scene, eventBus);
-        // new Lighting(scene);
 
         const sceneObjects = [ new Lighting(scene)];
 
@@ -104,8 +99,8 @@ function GameManager(canvas) {
             }
         }
 
-        console.log("--- levelObjects ---");
-        console.log(levelObjects);
+        // console.log("--- levelObjects ---");
+        // console.log(levelObjects);
         return sceneObjects;
     }
 
@@ -137,7 +132,6 @@ function GameManager(canvas) {
 
     function infoBusCallback(){
         console.log("--- sceneObject info ---");
-        // sceneObjects.forEach( object => console.log(object) );
         console.log(sceneObjects);
 
         console.log("--- eventBus info ---");
@@ -145,17 +139,13 @@ function GameManager(canvas) {
     }
 
     function dropGemsBusCallback(){
-        console.log("--- sceneObject info ---");
-        console.log(sceneObjects);
+        // console.log("--- sceneObject info ---");
+        // console.log(sceneObjects);
 
         // let tower = sceneObjects.filter( obj => obj.name = "Tower");
         let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
 
-        // console.log("--- tower ---");
-        // console.log(tower);
         let levels = tower.object.children;
-        // console.log("--- levels ---");
-        // console.log(levels);
 
         let columns = {
             "-1,-1": [],
@@ -175,28 +165,18 @@ function GameManager(canvas) {
                     if (x === 0 && z === 0) continue;
 
                     let children = level.children;
-                    // console.log("--- children ---");
-                    // console.log(children);
                     let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
-                    // console.log(`--- column ${x} ${z} ---`);
-                    // console.log(columnData);
                     if (columnData[0]) columns[x+','+z].push(columnData[0]);
                 
                 }  // z
             } // x
         }) // foreach
-        // console.log('--- columns ---');
-        // console.log(columns);
             
         for (var key in columns) {
             // skip loop if the property is from prototype
             if (!columns.hasOwnProperty(key)) continue;
 
-            // console.log("-key-");
-            // console.log(columns[key]);
-
             columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
-            // columns[key].forEach( (element, index) => console.log(  element.uuid, "moveto", index));
         }        
     }
 
@@ -216,11 +196,9 @@ function GameManager(canvas) {
         // let tower = sceneObjects.filter( obj => obj.name = "Tower");
         let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
 
-        // console.log("--- tower ---");
-        // console.log(tower);
+        console.log("--- tower ---");
+        console.log(tower);
         let levels = tower.object.children;
-        // console.log("--- levels ---");
-        // console.log(levels);
 
         let columns = {
             "-1,-1": [],
@@ -240,28 +218,18 @@ function GameManager(canvas) {
                     if (x === 0 && z === 0) continue;
 
                     let children = level.children;
-                    // console.log("--- children ---");
-                    // console.log(children);
                     let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
-                    // console.log(`--- column ${x} ${z} ---`);
-                    // console.log(columnData);
                     if (columnData[0]) columns[x+','+z].push(columnData[0]);
                 
                 }  // z
             } // x
         }) // foreach
-        // console.log('--- columns ---');
-        // console.log(columns);
             
         for (var key in columns) {
             // skip loop if the property is from prototype
             if (!columns.hasOwnProperty(key)) continue;
 
-            // console.log("-key-");
-            // console.log(columns[key]);
-
             columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
-            // columns[key].forEach( (element, index) => console.log(  element.uuid, "moveto", index));
         }        
     }
 
@@ -279,7 +247,6 @@ function GameManager(canvas) {
 
     this.mainListener = function (e) {
         e.preventDefault();
-        // console.log(e);
     
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
