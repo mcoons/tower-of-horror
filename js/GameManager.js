@@ -21,6 +21,15 @@ function GameManager(canvas) {
     // console.log(scene.children);
     // console.log(sceneObjects);
 
+
+    fetch("https://agile-citadel-53491.herokuapp.com/api")
+    // fetch("http://localhost:3030/api")
+
+    .then(response => response.json())
+    .then(response => gameState.scores = response.scores)
+    .then(() => buildScoreList())
+    // .then(response => console.log(response.scores[0]))
+
     console.log("---  gamestate in global ---")
     console.log(gameState.showCenter);
 
@@ -70,7 +79,6 @@ function GameManager(canvas) {
 
     function createSceneObjects(scene) {
 
-        
         const sceneObjects = [ new Lighting(scene)];
         
         let tower = new Tower(scene, eventBus);
@@ -81,21 +89,34 @@ function GameManager(canvas) {
             levelObjects.push(level);
             sceneObjects.push(level);
             tower.object.add(level.object);
-            // for (let x = -1; x < 2; x++){
-                //     for (let z = -1; z < 2; z++){
-                    //         if (x === 0 && z === 0 && !gameState.showCenter) continue;
-                    //         let rnum = bag.getRndNumber();
-                    //         let gem = new Gem(scene, eventBus, levelObjects, x,y,z, geometries[2], rnum);
-                    //         sceneObjects.push(gem);
-                    //         // level.object.add(gem.object);
-                    //     }
-                    // }
-                }
+        }
                 
         new Background(scene, eventBus, levelObjects);
         // console.log("--- levelObjects ---");
         // console.log(levelObjects);
         return sceneObjects;
+    }
+
+    function buildScoreList(){
+        if (gameState.scores.length < 1) return;
+
+        scorelist = document.getElementById("scorelist");
+
+        gameState.scores.forEach(score => {
+            recorddiv = document.createElement("div");
+            recorddiv.id = "recorddiv";
+
+            namediv = document.createElement("div");
+            namediv.innerText = score.initials.toUpperCase();
+            
+            scorediv = document.createElement("div");
+            scorediv.innerText = score.score;
+            
+            recorddiv.append( namediv );
+            recorddiv.append( scorediv );
+            
+            scorelist.append( recorddiv );
+        })
     }
 
     function clearLevel(){
@@ -136,79 +157,85 @@ function GameManager(canvas) {
 
         switch (gameState.gameState) {
             case "splash":
-                document.getElementById("scoreboard").classList.add("hidden");
-                document.getElementById("winner").classList.add("hidden");
-                document.getElementById("loser").classList.add("hidden");
-                document.getElementById("options").classList.add("hidden");
-                document.getElementById("instructions").classList.add("hidden");
-                document.getElementById("score").classList.add("hidden");
+                // document.getElementById("scoreboard").classList.add("hidden");
+                // document.getElementById("winner").classList.add("hidden");
+                // document.getElementById("loser").classList.add("hidden");
+                // document.getElementById("options").classList.add("hidden");
+                // document.getElementById("instructions").classList.add("hidden");
+                // document.getElementById("score").classList.add("hidden");
 
+                hideAll();
                 document.getElementById("splash").classList.remove("hidden");
             break;
 
             case "scoreboard":
-                document.getElementById("winner").classList.add("hidden");
-                document.getElementById("loser").classList.add("hidden");
-                document.getElementById("options").classList.add("hidden");
-                document.getElementById("splash").classList.add("hidden");   
-                document.getElementById("instructions").classList.add("hidden");
-                document.getElementById("score").classList.add("hidden");
+                // document.getElementById("winner").classList.add("hidden");
+                // document.getElementById("loser").classList.add("hidden");
+                // document.getElementById("options").classList.add("hidden");
+                // document.getElementById("splash").classList.add("hidden");   
+                // document.getElementById("instructions").classList.add("hidden");
+                // document.getElementById("score").classList.add("hidden");
 
+                hideAll();
                 document.getElementById("scoreboard").classList.remove("hidden");
             break;
 
             case "winner":
-                document.getElementById("scoreboard").classList.add("hidden");
-                document.getElementById("loser").classList.add("hidden");
-                document.getElementById("options").classList.add("hidden");
-                document.getElementById("splash").classList.add("hidden"); 
-                document.getElementById("instructions").classList.add("hidden");
-                document.getElementById("score").classList.add("hidden");
+                // document.getElementById("scoreboard").classList.add("hidden");
+                // document.getElementById("loser").classList.add("hidden");
+                // document.getElementById("options").classList.add("hidden");
+                // document.getElementById("splash").classList.add("hidden"); 
+                // document.getElementById("instructions").classList.add("hidden");
+                // document.getElementById("score").classList.add("hidden");
 
+                hideAll();
                 document.getElementById("winner").classList.remove("hidden");
             break;
 
             case "loser":
-                document.getElementById("scoreboard").classList.add("hidden");
-                document.getElementById("winner").classList.add("hidden");
-                document.getElementById("options").classList.add("hidden");
-                document.getElementById("splash").classList.add("hidden");   
-                document.getElementById("instructions").classList.add("hidden");
-                document.getElementById("score").classList.add("hidden");
+                // document.getElementById("scoreboard").classList.add("hidden");
+                // document.getElementById("winner").classList.add("hidden");
+                // document.getElementById("options").classList.add("hidden");
+                // document.getElementById("splash").classList.add("hidden");   
+                // document.getElementById("instructions").classList.add("hidden");
+                // document.getElementById("score").classList.add("hidden");
 
+                hideAll();
                 document.getElementById("loser").classList.remove("hidden");
             break;
 
             case "options":
-                document.getElementById("scoreboard").classList.add("hidden");
-                document.getElementById("winner").classList.add("hidden");
-                document.getElementById("loser").classList.add("hidden");
-                document.getElementById("options").classList.remove("hidden");
-                document.getElementById("instructions").classList.add("hidden");
-                document.getElementById("score").classList.add("hidden");
+                // document.getElementById("scoreboard").classList.add("hidden");
+                // document.getElementById("winner").classList.add("hidden");
+                // document.getElementById("loser").classList.add("hidden");
+                // document.getElementById("options").classList.remove("hidden");
+                // document.getElementById("instructions").classList.add("hidden");
+                // document.getElementById("score").classList.add("hidden");
 
+                hideAll();
                 document.getElementById("splash").classList.add("hidden");                
             break;
             
             case "instructions":
-            document.getElementById("scoreboard").classList.add("hidden");
-            document.getElementById("winner").classList.add("hidden");
-            document.getElementById("loser").classList.add("hidden");
-            document.getElementById("options").classList.add("hidden");
-            document.getElementById("splash").classList.add("hidden");
-            document.getElementById("score").classList.add("hidden");
-            
+            // document.getElementById("scoreboard").classList.add("hidden");
+            // document.getElementById("winner").classList.add("hidden");
+            // document.getElementById("loser").classList.add("hidden");
+            // document.getElementById("options").classList.add("hidden");
+            // document.getElementById("splash").classList.add("hidden");
+            // document.getElementById("score").classList.add("hidden");
+
+            hideAll();
             document.getElementById("instructions").classList.remove("hidden");
             break;
 
             case "playing":
-                document.getElementById("scoreboard").classList.add("hidden");
-                document.getElementById("winner").classList.add("hidden");
-                document.getElementById("loser").classList.add("hidden");
-                document.getElementById("options").classList.add("hidden");
-                document.getElementById("splash").classList.add("hidden");
-                document.getElementById("instructions").classList.add("hidden");
-
+                // document.getElementById("scoreboard").classList.add("hidden");
+                // document.getElementById("winner").classList.add("hidden");
+                // document.getElementById("loser").classList.add("hidden");
+                // document.getElementById("options").classList.add("hidden");
+                // document.getElementById("splash").classList.add("hidden");
+                // document.getElementById("instructions").classList.add("hidden");
+                hideAll();
                 document.getElementById("score").classList.remove("hidden");
             break;
             
@@ -217,9 +244,17 @@ function GameManager(canvas) {
             break;
         }
 
-
-
         renderer.render(scene, camera);
+    }
+
+    function hideAll(){
+        document.getElementById("scoreboard").classList.add("hidden");
+        document.getElementById("winner").classList.add("hidden");
+        document.getElementById("loser").classList.add("hidden");
+        document.getElementById("options").classList.add("hidden");
+        document.getElementById("splash").classList.add("hidden");
+        document.getElementById("instructions").classList.add("hidden");
+        document.getElementById("score").classList.add("hidden");
     }
 
     function selectedBusCallback(){

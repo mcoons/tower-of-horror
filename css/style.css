@@ -64,6 +64,23 @@ h1 {
     width: 100px;
 }
 
+#recorddiv {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3px;
+    padding:5px;
+    background-color: gray;
+}
+
+#recorddiv div {
+    display: inline-block;
+    width: 50px;
+}
+
 .header{
 
 
