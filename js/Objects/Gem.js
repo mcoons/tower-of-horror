@@ -33,16 +33,25 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
     gem.callback = gemClicked;
     gem.name = x + "," + y + "," + z;
     scene.add(gem);
+
+    // console.log("--- level objects in gem ---");
+    // console.log(levelObjects);
+    levelObjects[y].object.add(gem);
+
   
     subscribe();
 
     this.update = function(time) {
-        gem.rotation.y -=.01;
-        if (gem.rotation.y < -2*Math.PI) {
-            gem.rotation.y = 0;
-        }
+        worldPosition = new THREE.Vector3();
+        worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
-        var worldPosition = new THREE.Vector3();
+        if (worldPosition.z > .95){
+            gem.rotation.y -=.02;
+            if (gem.rotation.y < -2*Math.PI) {
+                gem.rotation.y = 0;
+            }
+        }
+            var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
         let newName = Math.round( worldPosition.x ) + "," + Math.round( worldPosition.y ) + "," + Math.round( worldPosition.z );
@@ -56,7 +65,7 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
                 gem.position.y = this.endDropping;
                 eventBus.post('animationEnded');
 
-                var worldPosition = new THREE.Vector3();
+                worldPosition = new THREE.Vector3();
                 worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
                 eventBus.post("newGem", my.material, my.object.position, worldPosition);
@@ -106,6 +115,14 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         }
         // console.log("selected = ",selectedCount);
     }
+
+    function newLevelBusCallback(){
+        unsubscribe();      
+
+        my.del = true;
+        my.object.parent.remove(gem);
+    }
+    
 
     function myChannelBusCallback(eventType, message, value){
         switch (message) {
@@ -199,6 +216,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         eventBus.subscribe(my.id, myChannelBusCallback);
         eventBus.subscribe('animationStarting', animationStartingBusCallback);
         eventBus.subscribe('animationEnded', animationEndedBusCallback);
+        eventBus.subscribe('newLevel', newLevelBusCallback);
+
     }
 
     function unsubscribe(){
@@ -208,6 +227,7 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         eventBus.unsubscribe(my.id, myChannelBusCallback);
         eventBus.unsubscribe('animationStarting', animationStartingBusCallback);
         eventBus.unsubscribe('animationEnded', animationEndedBusCallback);
+        eventBus.unsubscribe('newLevel', newLevelBusCallback);
     }
     
 }

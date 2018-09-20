@@ -1,5 +1,5 @@
 
-function Background(scene, eventBus) {
+function Background(scene, eventBus, levelObjects) {
     this.del = false;
 
     // Diffuse - COLOR *
@@ -67,10 +67,33 @@ function Background(scene, eventBus) {
     plane.position.y = 2.5;
     scene.add( plane );
 
+
+
+    for (let x = -1; x < 2; x++){
+        for (let z = -1; z < 2; z++){
+
+            // bottom
+            plane = new THREE.Mesh( new THREE.PlaneGeometry( .9, .9 ),  new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true}));
+            plane.name = "column plane";
+            // plane.callback = backgroundClicked;
+            plane.rotation.x = - 90 * ( Math.PI / 180 );
+            plane.position.x = x;
+            plane.position.y = -.4;
+            plane.position.z = z;
+            plane.callback = function(){};
+            scene.add( plane );
+            levelObjects[0].object.add(plane);
+
+            }
+
+     }
+ 
+
 	this.update = function(time) {}
 
     function backgroundClicked(event){
+        console.log("background clicked")
         eventBus.post('clear');
-        // eventBus.post("info");
+        eventBus.post('info');
     }
 }

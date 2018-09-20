@@ -1,48 +1,42 @@
 
 function GameManager(canvas) {
 
-    const geometries = [
-        new THREE.IcosahedronGeometry(.45, 0),
-        new THREE.IcosahedronGeometry(.45, 1),
-        new THREE.IcosahedronGeometry(.45, 2)
-    ];
-
+    var gameState = new GameState();
+    const geometries = [ new THREE.IcosahedronGeometry(.45, 0), new THREE.IcosahedronGeometry(.45, 1), new THREE.IcosahedronGeometry(.45, 2)];
     const height = 6;
-
     const levelObjects = [];
-
     const clock = new THREE.Clock();
-
-    const rand = LCG(17191);  
-    const bag = new GrabBag(0,3,5,rand); 
- 
-    const screenDimensions = {
-        width: canvas.width,
-        height: canvas.height
-    }
-
-
+    var rand = LCG(17191);  
+    var bag = new GrabBag(0,3,5,rand); 
+    const screenDimensions = { width: canvas.width, height: canvas.height };
     const scene = buildScene();
-    window.scene = scene;
-
     const renderer = buildRender(screenDimensions);
     const camera = buildCamera(screenDimensions);
     var eventBus = new EventBus();
-    console.log(eventBus);
     var sceneObjects = createSceneObjects(scene);
 
-    console.log(scene.children);
-    console.log(sceneObjects);
+    window.scene = scene;
+    
+    // console.log(eventBus);
+    // console.log(scene.children);
+    // console.log(sceneObjects);
+
+    console.log("---  gamestate in global ---")
+    console.log(gameState.showCenter);
 
     function buildScene() {
         const scene = new THREE.Scene();
         return scene;
     }
 
-    // eventBus.subscribe("info", infoBusCallback);
+    eventBus.subscribe("info", infoBusCallback);
     // eventBus.subscribe("info", columnInfoBusCallback);
     eventBus.subscribe("newGem", newGemBusCallback);
     eventBus.subscribe("dropGems", dropGemsBusCallback);
+    eventBus.subscribe("selected", selectedBusCallback);
+    eventBus.subscribe('removed', removedBusCallback);
+    eventBus.subscribe('clear', clearBusCallback);
+
 
     function buildRender({ width, height }) {
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); 
@@ -76,50 +70,171 @@ function GameManager(canvas) {
 
     function createSceneObjects(scene) {
 
-        new Background(scene, eventBus);
-
+        
         const sceneObjects = [ new Lighting(scene)];
-
+        
         let tower = new Tower(scene, eventBus);
         sceneObjects.push(tower);
-
+        
         for (let y = 0; y < height; y++) {
             let level = new Level(scene, eventBus, y);
             levelObjects.push(level);
             sceneObjects.push(level);
             tower.object.add(level.object);
-            for (let x = -1; x < 2; x++){
-                for (let z = -1; z < 2; z++){
-                    if (x === 0 && z === 0) continue;
-                    let rnum = bag.getRndNumber();
-                    let gem = new Gem(scene, eventBus, levelObjects, x,y,z, geometries[2], rnum);
-                    sceneObjects.push(gem);
-                    level.object.add(gem.object);
+            // for (let x = -1; x < 2; x++){
+                //     for (let z = -1; z < 2; z++){
+                    //         if (x === 0 && z === 0 && !gameState.showCenter) continue;
+                    //         let rnum = bag.getRndNumber();
+                    //         let gem = new Gem(scene, eventBus, levelObjects, x,y,z, geometries[2], rnum);
+                    //         sceneObjects.push(gem);
+                    //         // level.object.add(gem.object);
+                    //     }
+                    // }
                 }
-            }
-        }
-
+                
+        new Background(scene, eventBus, levelObjects);
         // console.log("--- levelObjects ---");
         // console.log(levelObjects);
         return sceneObjects;
     }
 
+    function clearLevel(){
+        eventBus.post("newLevel");
+
+        gameState.level += 1;
+        buildLevel();
+
+        // sceneObjects = [];
+
+    }
+
+    function  buildLevel(){
+        rand = LCG(gameState.levelData[0].seed);  
+        bag = new GrabBag(0,gameState.levelData[gameState.level].colors,5,rand); 
+        for (let y = 0; y < height; y++) 
+        for (let x = -1; x < 2; x++){
+            for (let z = -1; z < 2; z++){
+                if (x === 0 && z === 0 && !gameState.showCenter) continue;
+                let rnum = bag.getRndNumber();
+                let gem = new Gem(scene, eventBus, levelObjects, x,y,z, geometries[2], rnum);
+                sceneObjects.push(gem);
+                // level.object.add(gem.object);
+            }
+        }
+    }
+
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
-        for(let i=0; i<sceneObjects.length; i++){
-        	sceneObjects[i].update(elapsedTime);
+        sceneObjects.forEach( obj => obj.update(elapsedTime) );
+
+        // let removedObjects = sceneObjects.filter( subject => subject.del === true );
+
+        sceneObjects = sceneObjects.filter( subject => subject.del === false );
+
+        if (sceneObjects.length === 8 && gameState.gameState ==="playing"){gameState.gameState = "winner"};
+
+        switch (gameState.gameState) {
+            case "splash":
+                document.getElementById("scoreboard").classList.add("hidden");
+                document.getElementById("winner").classList.add("hidden");
+                document.getElementById("loser").classList.add("hidden");
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("instructions").classList.add("hidden");
+                document.getElementById("score").classList.add("hidden");
+
+                document.getElementById("splash").classList.remove("hidden");
+            break;
+
+            case "scoreboard":
+                document.getElementById("winner").classList.add("hidden");
+                document.getElementById("loser").classList.add("hidden");
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("splash").classList.add("hidden");   
+                document.getElementById("instructions").classList.add("hidden");
+                document.getElementById("score").classList.add("hidden");
+
+                document.getElementById("scoreboard").classList.remove("hidden");
+            break;
+
+            case "winner":
+                document.getElementById("scoreboard").classList.add("hidden");
+                document.getElementById("loser").classList.add("hidden");
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("splash").classList.add("hidden"); 
+                document.getElementById("instructions").classList.add("hidden");
+                document.getElementById("score").classList.add("hidden");
+
+                document.getElementById("winner").classList.remove("hidden");
+            break;
+
+            case "loser":
+                document.getElementById("scoreboard").classList.add("hidden");
+                document.getElementById("winner").classList.add("hidden");
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("splash").classList.add("hidden");   
+                document.getElementById("instructions").classList.add("hidden");
+                document.getElementById("score").classList.add("hidden");
+
+                document.getElementById("loser").classList.remove("hidden");
+            break;
+
+            case "options":
+                document.getElementById("scoreboard").classList.add("hidden");
+                document.getElementById("winner").classList.add("hidden");
+                document.getElementById("loser").classList.add("hidden");
+                document.getElementById("options").classList.remove("hidden");
+                document.getElementById("instructions").classList.add("hidden");
+                document.getElementById("score").classList.add("hidden");
+
+                document.getElementById("splash").classList.add("hidden");                
+            break;
+            
+            case "instructions":
+            document.getElementById("scoreboard").classList.add("hidden");
+            document.getElementById("winner").classList.add("hidden");
+            document.getElementById("loser").classList.add("hidden");
+            document.getElementById("options").classList.add("hidden");
+            document.getElementById("splash").classList.add("hidden");
+            document.getElementById("score").classList.add("hidden");
+            
+            document.getElementById("instructions").classList.remove("hidden");
+            break;
+
+            case "playing":
+                document.getElementById("scoreboard").classList.add("hidden");
+                document.getElementById("winner").classList.add("hidden");
+                document.getElementById("loser").classList.add("hidden");
+                document.getElementById("options").classList.add("hidden");
+                document.getElementById("splash").classList.add("hidden");
+                document.getElementById("instructions").classList.add("hidden");
+
+                document.getElementById("score").classList.remove("hidden");
+            break;
+            
+
+            default:
+            break;
         }
 
-        let removedObjects = sceneObjects.filter(
-            subject => subject.del === true
-        );
 
-        sceneObjects = sceneObjects.filter(
-            subject => subject.del === false
-        );
 
         renderer.render(scene, camera);
+    }
+
+    function selectedBusCallback(){
+        gameState.gemsSelected = gameState.gemsSelected + 1;;
+    }
+
+    function removedBusCallback(){
+        // console.log("Number removed", gameState.gemsSelected );
+        gameState.score += gameState.gemsSelected * gameState.gemsSelected;
+        document.getElementById("scorevalue").innerText = gameState.score ;
+        gameState.gemsSelected = 0;
+    }
+
+    function clearBusCallback(){
+        gameState.gemsSelected = 0;
     }
 
     function newGemBusCallback(eventType, material, localPosition, globalPosition){
@@ -131,11 +246,16 @@ function GameManager(canvas) {
     } 
 
     function infoBusCallback(){
+        console.log("---  gamestate in call back ---")
+        console.log(gameState);
+
+        // clearLevel();
+
         console.log("--- sceneObject info ---");
         console.log(sceneObjects);
 
         console.log("--- eventBus info ---");
-        console.log(eventBus.eventObjects);
+        // console.log(eventBus.eventObjects);
     }
 
     function dropGemsBusCallback(){
@@ -144,30 +264,17 @@ function GameManager(canvas) {
 
         // let tower = sceneObjects.filter( obj => obj.name = "Tower");
         let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
-
         let levels = tower.object.children;
-
-        let columns = {
-            "-1,-1": [],
-            "-1,0": [],
-            "-1,1": [],
-            "0,-1": [],
-            "0,0": [],
-            "0,1": [],
-            "1,-1": [],
-            "1,0": [],
-            "1,1": []
-        };
+        let columns = { "-1,-1": [], "-1,0": [], "-1,1": [], "0,-1": [], "0,0": [], "0,1": [], "1,-1": [], "1,0": [], "1,1": [] };
 
         levels.forEach( (level, index) => {
             for (let x = -1; x < 2; x++ ){
                 for (let z = -1; z < 2; z++){
-                    if (x === 0 && z === 0) continue;
+                    if (x === 0 && z === 0 && !gameState.showCenter) continue;
 
                     let children = level.children;
                     let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
                     if (columnData[0]) columns[x+','+z].push(columnData[0]);
-                
                 }  // z
             } // x
         }) // foreach
@@ -180,14 +287,14 @@ function GameManager(canvas) {
         }        
     }
 
-    function infoBusCallback(){
-        console.log("--- sceneObject info ---");
-        // sceneObjects.forEach( object => console.log(object) );
-        console.log(sceneObjects);
+    // function infoBusCallback(){
+    //     console.log("--- sceneObject info ---");
+    //     // sceneObjects.forEach( object => console.log(object) );
+    //     console.log(sceneObjects);
 
-        console.log("--- eventBus info ---");
-        console.log(eventBus.eventObjects);
-    }
+    //     console.log("--- eventBus info ---");
+    //     console.log(eventBus.eventObjects);
+    // }
 
     function columnInfoBusCallback(){
         console.log("--- sceneObject info ---");
@@ -233,6 +340,21 @@ function GameManager(canvas) {
         }        
     }
 
+    this.startButtonEvent = function(e){
+        e.preventDefault();
+
+        gameState.gameState = "playing";
+        clearLevel();
+        console.log("start button pressed!")
+    }
+
+    this.instructionsButtonEvent = function(e){
+        e.preventDefault();
+
+        gameState.gameState = "instructions";
+        console.log("instructions button pressed!")
+    }
+
     this.onWindowResize = function() {
         const { width, height } = canvas;
 
@@ -259,4 +381,6 @@ function GameManager(canvas) {
         (intersects.length > 0) ? intersects[0].object.callback(e) : console.log(sceneObjects);
         
     }
+
+
 }
