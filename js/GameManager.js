@@ -15,6 +15,8 @@ function GameManager(canvas) {
     var eventBus = new EventBus();
     var sceneObjects = createSceneObjects(scene);
 
+    const apiurl = "https://agile-citadel-53491.herokuapp.com/api";
+
     window.scene = scene;
     
     // console.log(eventBus);
@@ -22,7 +24,7 @@ function GameManager(canvas) {
     // console.log(sceneObjects);
 
 
-    fetch("https://agile-citadel-53491.herokuapp.com/api")
+    fetch(apiurl)
     // fetch("http://localhost:3030/api")
 
     .then(response => response.json())
@@ -153,89 +155,44 @@ function GameManager(canvas) {
 
         sceneObjects = sceneObjects.filter( subject => subject.del === false );
 
-        if (sceneObjects.length === 8 && gameState.gameState ==="playing"){gameState.gameState = "winner"};
+        if (sceneObjects.length === 8 && gameState.gameState ==="playing"){
+            gameState.gameState = "winner";
+
+            
+        // ask for initials
+
+        // post initials and score
+
+        };
+
+        hideAll();
 
         switch (gameState.gameState) {
             case "splash":
-                // document.getElementById("scoreboard").classList.add("hidden");
-                // document.getElementById("winner").classList.add("hidden");
-                // document.getElementById("loser").classList.add("hidden");
-                // document.getElementById("options").classList.add("hidden");
-                // document.getElementById("instructions").classList.add("hidden");
-                // document.getElementById("score").classList.add("hidden");
-
-                hideAll();
                 document.getElementById("splash").classList.remove("hidden");
             break;
 
             case "scoreboard":
-                // document.getElementById("winner").classList.add("hidden");
-                // document.getElementById("loser").classList.add("hidden");
-                // document.getElementById("options").classList.add("hidden");
-                // document.getElementById("splash").classList.add("hidden");   
-                // document.getElementById("instructions").classList.add("hidden");
-                // document.getElementById("score").classList.add("hidden");
-
-                hideAll();
                 document.getElementById("scoreboard").classList.remove("hidden");
             break;
 
             case "winner":
-                // document.getElementById("scoreboard").classList.add("hidden");
-                // document.getElementById("loser").classList.add("hidden");
-                // document.getElementById("options").classList.add("hidden");
-                // document.getElementById("splash").classList.add("hidden"); 
-                // document.getElementById("instructions").classList.add("hidden");
-                // document.getElementById("score").classList.add("hidden");
-
-                hideAll();
                 document.getElementById("winner").classList.remove("hidden");
             break;
 
             case "loser":
-                // document.getElementById("scoreboard").classList.add("hidden");
-                // document.getElementById("winner").classList.add("hidden");
-                // document.getElementById("options").classList.add("hidden");
-                // document.getElementById("splash").classList.add("hidden");   
-                // document.getElementById("instructions").classList.add("hidden");
-                // document.getElementById("score").classList.add("hidden");
-
-                hideAll();
                 document.getElementById("loser").classList.remove("hidden");
             break;
 
             case "options":
-                // document.getElementById("scoreboard").classList.add("hidden");
-                // document.getElementById("winner").classList.add("hidden");
-                // document.getElementById("loser").classList.add("hidden");
-                // document.getElementById("options").classList.remove("hidden");
-                // document.getElementById("instructions").classList.add("hidden");
-                // document.getElementById("score").classList.add("hidden");
-
-                hideAll();
                 document.getElementById("splash").classList.add("hidden");                
             break;
             
             case "instructions":
-            // document.getElementById("scoreboard").classList.add("hidden");
-            // document.getElementById("winner").classList.add("hidden");
-            // document.getElementById("loser").classList.add("hidden");
-            // document.getElementById("options").classList.add("hidden");
-            // document.getElementById("splash").classList.add("hidden");
-            // document.getElementById("score").classList.add("hidden");
-
-            hideAll();
-            document.getElementById("instructions").classList.remove("hidden");
+                document.getElementById("instructions").classList.remove("hidden");
             break;
 
             case "playing":
-                // document.getElementById("scoreboard").classList.add("hidden");
-                // document.getElementById("winner").classList.add("hidden");
-                // document.getElementById("loser").classList.add("hidden");
-                // document.getElementById("options").classList.add("hidden");
-                // document.getElementById("splash").classList.add("hidden");
-                // document.getElementById("instructions").classList.add("hidden");
-                hideAll();
                 document.getElementById("score").classList.remove("hidden");
             break;
             
@@ -415,6 +372,33 @@ function GameManager(canvas) {
         var intersects = raycaster.intersectObjects(scene.children, true);
         (intersects.length > 0) ? intersects[0].object.callback(e) : console.log(sceneObjects);
         
+    }
+
+
+    document.getElementById("savebutton").addEventListener("click",submitForm);
+
+
+    function submitForm(event){
+        console.log("IN SUBMIT FORM")
+        event.preventDefault();
+        // var baseUrl = apiurl;
+        var postObject = {  
+            
+            'initials': document.getElementById("initials").value,
+            'score': gameState.score
+        
+
+        };
+        var postOptions = {
+            method: 'POST',
+            headers: new Headers({'Content-Type': 'application/json'}),
+            body: JSON.stringify(postObject)
+        };
+
+        fetch(apiurl, postOptions)
+        .then(response => response.json())
+        // .then(response => console.log(response.message) )
+        .catch(error => console.error("ERROR: ",error));
     }
 
 

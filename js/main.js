@@ -10,16 +10,14 @@ render();
 function bindEventListeners() {
 	window.onresize = resizeCanvas;
     // window.onclick = mainListener;
+    window.ondblclick = function (e){e.preventDefault();console.log("dbl click")}
     window.oncontextmenu = mainListener;
 
     document.getElementById("canvas").addEventListener("click", mainListener);
-    // console.log(document.getElementsByClassName("startbutton"));
     Array.from(document.querySelectorAll(".startbutton")).forEach(element => {
         element.addEventListener("click", gameManager.startButtonEvent);
     });
     document.getElementById("instructionsbutton").addEventListener("click", gameManager.instructionsButtonEvent);
-
-
 }
 
 function resizeCanvas() {
