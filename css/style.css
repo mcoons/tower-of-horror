@@ -26,22 +26,32 @@ html, body {
     font-size: 5vw;
 }
 
-h1 {
+/* h1 {
     text-shadow: 2px 2px 3px gray;
-}
+} */
 
 .scoreboard, .splash, .winner, .loser, .options, .instructions{
-    background-color: gold;
+
+    background-image: linear-gradient(to bottom right, white, rgb(214, 214, 214));
+
+    box-shadow: 
+    -3px -3px 5px rgba(230, 230, 255, 0.815) inset, 
+    3px 3px 5px  rgba(128, 128, 128, 0.795) inset;
+
     width: 50vw; 
     position: absolute; 
     z-index: 99;
     padding: 10px;
+    margin-top: 20px;
     /* left: 25vw; */
     /* top:50px; */
     text-align: center; 
 
-    border-radius: 5px;
+    border: 10px solid white;
+
+    border-radius: 15px;
     align-self: auto;
+    
 }
 
 .score{
@@ -49,6 +59,13 @@ h1 {
     position: absolute; 
     z-index: 99;
     color:gold;
+    text-shadow: 
+    .5px .5px darkgoldenrod, 
+    1px 1px darkgoldenrod,
+    1.5px 1.5px darkgoldenrod,
+    2px 2px darkgoldenrod,
+    2.5px 2.5px darkgoldenrod, 
+    3px 3px darkgoldenrod;
 }
 
 .hidden {
@@ -56,23 +73,47 @@ h1 {
 }
 
 .button{
+    font-size: 13px;
     padding: 10px 20px;
     margin: 10px;
-    border: 1px solid black;
+    border-top: 1px solid rgb(206, 206, 206);
+    border-left: 1px solid rgb(206, 206, 206);
+    border-right: 1px solid rgb(92, 92, 92);
+    border-bottom: 1px solid rgb(92, 92, 92);
     border-radius: 5px;
-    box-shadow: 3px 3px 3px gray;
-    width: 100px;
+    width: 120px;
+
+    background-image: linear-gradient(to bottom right, rgb(202, 202, 202),rgb(139, 139, 139) );
+
+    box-shadow: 3px 3px 4px rgba(155, 155, 155, 0.856),
+    3px 3px 3px white inset, 
+    -3px -3px 3px rgb(105, 105, 105) inset;
+}
+
+.button:hover {
+    background-image: linear-gradient(to bottom right, rgb(223, 223, 223),rgb(167, 167, 167) );
+}
+
+
+#scorelist{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: center;
+    width: 130px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #recorddiv {
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 100px;
+    width: 120px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 3px;
-    padding:5px;
+    padding: 5px;
     background-color: gray;
 }
 
@@ -81,11 +122,6 @@ h1 {
     width: 50px;
 }
 
-.header{
-
-
-}
-
-.list{
-
+#initials {
+    text-transform:uppercase
 }
