@@ -104,21 +104,23 @@ function GameManager(canvas) {
 
         scorelist = document.getElementById("scorelist");
 
-        gameState.scores.forEach(score => {
+
+        for(s = 0; s < 5; s++){
+        // gameState.scores.forEach(score => {
             recorddiv = document.createElement("div");
             recorddiv.id = "recorddiv";
 
             namediv = document.createElement("div");
-            namediv.innerText = score.initials.toUpperCase();
+            namediv.innerText = gameState.scores[s].initials.toUpperCase();
             
             scorediv = document.createElement("div");
-            scorediv.innerText = score.score;
+            scorediv.innerText = gameState.scores[s].score;
             
             recorddiv.append( namediv );
             recorddiv.append( scorediv );
             
             scorelist.append( recorddiv );
-        })
+        }
     }
 
     function clearLevel(){
@@ -172,17 +174,18 @@ function GameManager(canvas) {
                 document.getElementById("splash").classList.remove("hidden");
             break;
 
-            case "scoreboard":
-                document.getElementById("scoreboard").classList.remove("hidden");
-            break;
+            // case "scoreboard":
+            //     document.getElementById("scoreboard").classList.remove("hidden");
+            // break;
 
             case "winner":
+                document.querySelector("#winner h1").innerText = `Level ${gameState.level+ 1} completed.`;
                 document.getElementById("winner").classList.remove("hidden");
             break;
 
-            case "loser":
-                document.getElementById("loser").classList.remove("hidden");
-            break;
+            // case "loser":
+            //     document.getElementById("loser").classList.remove("hidden");
+            // break;
 
             case "options":
                 document.getElementById("splash").classList.add("hidden");                
@@ -205,9 +208,9 @@ function GameManager(canvas) {
     }
 
     function hideAll(){
-        document.getElementById("scoreboard").classList.add("hidden");
+        // document.getElementById("scoreboard").classList.add("hidden");
         document.getElementById("winner").classList.add("hidden");
-        document.getElementById("loser").classList.add("hidden");
+        // document.getElementById("loser").classList.add("hidden");
         document.getElementById("options").classList.add("hidden");
         document.getElementById("splash").classList.add("hidden");
         document.getElementById("instructions").classList.add("hidden");
@@ -220,7 +223,7 @@ function GameManager(canvas) {
 
     function removedBusCallback(){
         // console.log("Number removed", gameState.gemsSelected );
-        gameState.score += gameState.gemsSelected * gameState.gemsSelected;
+        gameState.score += gameState.gemsSelected * gameState.gemsSelected * (gameState.level+1);
         document.getElementById("scorevalue").innerText = gameState.score ;
         gameState.gemsSelected = 0;
     }
@@ -255,7 +258,7 @@ function GameManager(canvas) {
         // console.log(sceneObjects);
 
         // let tower = sceneObjects.filter( obj => obj.name = "Tower");
-        let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
+        let tower = sceneObjects[1]; // ???????  WILL THIS EVER CHANGE ITS INDEX  ???????
         let levels = tower.object.children;
         let columns = { "-1,-1": [], "-1,0": [], "-1,1": [], "0,-1": [], "0,0": [], "0,1": [], "1,-1": [], "1,0": [], "1,1": [] };
 
@@ -379,15 +382,14 @@ function GameManager(canvas) {
 
 
     function submitForm(event){
-        console.log("IN SUBMIT FORM")
+        console.log("IN SUBMIT FORM");
+
         event.preventDefault();
+        
         // var baseUrl = apiurl;
         var postObject = {  
-            
             'initials': document.getElementById("initials").value,
             'score': gameState.score
-        
-
         };
         var postOptions = {
             method: 'POST',
@@ -397,8 +399,10 @@ function GameManager(canvas) {
 
         fetch(apiurl, postOptions)
         .then(response => response.json())
-        // .then(response => console.log(response.message) )
         .catch(error => console.error("ERROR: ",error));
+
+        gameState.gameState = "splash";
+
     }
 
 
