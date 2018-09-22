@@ -123,5 +123,6 @@ html, body {
 }
 
 #initials {
-    text-transform:uppercase
+    text-transform:uppercase;
+    width: 50px;
 }

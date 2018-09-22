@@ -113,10 +113,14 @@ function GameManager(canvas) {
             namediv = document.createElement("div");
             namediv.innerText = gameState.scores[s].initials.toUpperCase();
             
+            leveldiv = document.createElement("div");
+            leveldiv.innerText = gameState.scores[s].level.toUpperCase();
+            
             scorediv = document.createElement("div");
             scorediv.innerText = gameState.scores[s].score;
             
             recorddiv.append( namediv );
+            recorddiv.append( leveldiv );
             recorddiv.append( scorediv );
             
             scorelist.append( recorddiv );
@@ -135,7 +139,7 @@ function GameManager(canvas) {
 
     function  buildLevel(){
         rand = LCG(gameState.levelData[0].seed);  
-        bag = new GrabBag(0,gameState.levelData[gameState.level].colors,5,rand); 
+        bag = new GrabBag(0,gameState.levelData[gameState.level].colors,gameState.levelData[0].dups,rand); 
         for (let y = 0; y < height; y++) 
         for (let x = -1; x < 2; x++){
             for (let z = -1; z < 2; z++){
@@ -216,6 +220,17 @@ function GameManager(canvas) {
         document.getElementById("instructions").classList.add("hidden");
         document.getElementById("score").classList.add("hidden");
     }
+
+
+/*********   Need to complete    *********/
+
+    function insertSCore(){
+
+    }
+
+
+
+
 
     function selectedBusCallback(){
         gameState.gemsSelected = gameState.gemsSelected + 1;;
@@ -389,6 +404,7 @@ function GameManager(canvas) {
         // var baseUrl = apiurl;
         var postObject = {  
             'initials': document.getElementById("initials").value,
+            'level': gameState.level,
             'score': gameState.score
         };
         var postOptions = {
