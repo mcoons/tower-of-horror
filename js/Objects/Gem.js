@@ -6,8 +6,14 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
         new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
         new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
-        new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 }),
+        new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
+        new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
+        new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
+        new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
     ];
+
+    var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
+
 
     var animationInProgress = false;
 
@@ -107,7 +113,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
                 eventBus.post('clear', my.material, worldPosition);
 
                 my.selected = true;
-                gem.material = materials[6]; // material to white
+                // gem.material = materials[6]; // material to white
+                gem.material = selectedMaterial; // material to white
                 eventBus.post('selected', my.material, worldPosition);
             }
         } else {
@@ -169,7 +176,8 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
         if (my.material === material && distance(worldPosition, position) < 1.05){
             my.selected = true;
-            gem.material = materials[6]; // material to white
+            // gem.material = materials[6]; // material to white
+            gem.material = selectedMaterial; // material to white
             eventBus.post('selected', my.material, worldPosition);                       
         }
     }

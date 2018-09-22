@@ -104,6 +104,9 @@ function GameManager(canvas) {
 
         scorelist = document.getElementById("scorelist");
 
+        while (scorelist.firstChild) {
+            scorelist.removeChild(scorelist.firstChild);
+        }
 
         for(s = 0; s < 5; s++){
         // gameState.scores.forEach(score => {
@@ -114,7 +117,7 @@ function GameManager(canvas) {
             namediv.innerText = gameState.scores[s].initials.toUpperCase();
             
             leveldiv = document.createElement("div");
-            leveldiv.innerText = gameState.scores[s].level.toUpperCase();
+            leveldiv.innerText = "lvl"+gameState.scores[s].level;
             
             scorediv = document.createElement("div");
             scorediv.innerText = gameState.scores[s].score;
@@ -130,7 +133,8 @@ function GameManager(canvas) {
     function clearLevel(){
         eventBus.post("newLevel");
 
-        gameState.level += 1;
+        if (gameState.level < 20)
+            gameState.level += 1;
         buildLevel();
 
         // sceneObjects = [];
@@ -404,7 +408,7 @@ function GameManager(canvas) {
         // var baseUrl = apiurl;
         var postObject = {  
             'initials': document.getElementById("initials").value,
-            'level': gameState.level,
+            'level': (gameState.level+1),
             'score': gameState.score
         };
         var postOptions = {
@@ -417,8 +421,34 @@ function GameManager(canvas) {
         .then(response => response.json())
         .catch(error => console.error("ERROR: ",error));
 
-        gameState.gameState = "splash";
+        gameState.lastScore = gameState.score;
+        insertScore(postObject);
 
+        gameState.gameState = "splash";
+        buildScoreList();
+
+    }
+
+    function insertScore(newScore){
+
+        if (newScore.score > gameState.scores[0].score) {
+            gameState.scores.unshift(newScore);
+            return;
+        }
+
+        if (newScore.score < gameState.scores[gameState.scores.length-1].score) {
+            gameState.scores.push(newScore);
+            return;
+        }
+
+
+        for (var i = 0, len = gameState.scores.length; i < len; i++) {
+            if (newScore.score < gameState.scores[i].score) {
+                gameState.scores.splice(i, 0, newScore);
+                break;
+            }
+        }
+        
     }
 
 
