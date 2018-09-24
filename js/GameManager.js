@@ -74,7 +74,8 @@ function GameManager(canvas) {
         const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
 
         camera.name = "camera";
-        camera.position.set(0,2.5,12);
+        // camera.position.set(0,2.5,12);
+        camera.position.set(0,2.5,10);
 
         return camera;
     }
@@ -175,7 +176,7 @@ function GameManager(canvas) {
 
         //  rand = LCG(17191);  
         //  bag = new GrabBag(0,3,5,rand); 
-        
+
         window.location.reload();
     }
 

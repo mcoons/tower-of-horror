@@ -1,5 +1,15 @@
 function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, material){
         const materials = [
+            matMaterial,
+            matMaterial2,
+            matMaterial3,
+            matMaterial4,
+            matMaterial5,
+            matMaterial6,
+            matMaterial7,
+            matMaterial8,
+            matMaterial9,
+
         new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
         new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
         new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
