@@ -7,7 +7,13 @@ html, body {
 
     display:flex;
     justify-content: center;
+
+    font-family: Arial, Helvetica, sans-serif;
     
+}
+
+h3 {
+    margin: 5px;
 }
 
 .list {
@@ -25,6 +31,10 @@ html, body {
     justify-content: space-between;
     font-size: 5vw;
 }
+
+/* .recorddiv {
+    background-color: white;
+} */
 
 /* h1 {
     text-shadow: 2px 2px 3px gray;
@@ -105,19 +115,28 @@ html, body {
     margin-right: auto;
 }
 
-#recorddiv {
+.recorddiv {
     display:flex;
     flex-direction: row;
     justify-content: space-between;
     /* width: 120px; */
     margin-left: auto;
     margin-right: auto;
-    margin-top: 3px;
-    padding: 5px;
-    background-color: gray;
+    margin-top: 7px;
+    padding-top: 5px;
+    background-color: white;
+
+
+    box-shadow: 3px 3px 4px rgba(155, 155, 155, 0.856),
+    -3px -3px 5px rgba(230, 230, 255, 0.815) inset, 
+    3px 3px 5px  rgba(128, 128, 128, 0.795) inset;
+
+    border: 5px solid white;
+
+    border-radius: 5px;
 }
 
-#recorddiv div {
+.recorddiv div {
     display: inline-block;
     width: 50px;
 }

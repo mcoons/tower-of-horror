@@ -15,6 +15,7 @@ function GameManager(canvas) {
     var eventBus = new EventBus();
     var sceneObjects = createSceneObjects(scene);
 
+
     const apiurl = "https://agile-citadel-53491.herokuapp.com/api";
 
     window.scene = scene;
@@ -33,7 +34,7 @@ function GameManager(canvas) {
     // .then(response => console.log(response.scores[0]))
 
     console.log("---  gamestate in global ---")
-    console.log(gameState.showCenter);
+    console.log(gameState);
 
     function buildScene() {
         const scene = new THREE.Scene();
@@ -47,6 +48,7 @@ function GameManager(canvas) {
     eventBus.subscribe("selected", selectedBusCallback);
     eventBus.subscribe('removed', removedBusCallback);
     eventBus.subscribe('clear', clearBusCallback);
+    eventBus.subscribe('animationEnded', animationEndedBusCallback);
 
 
     function buildRender({ width, height }) {
@@ -64,7 +66,6 @@ function GameManager(canvas) {
         return renderer;
     }
 
-
     function buildCamera({ width, height }) {
         const aspectRatio = width / height;
         const fieldOfView = 60;
@@ -77,7 +78,6 @@ function GameManager(canvas) {
 
         return camera;
     }
-
 
     function createSceneObjects(scene) {
 
@@ -109,17 +109,17 @@ function GameManager(canvas) {
         }
 
         for(s = 0; s < 5; s++){
-        // gameState.scores.forEach(score => {
-            recorddiv = document.createElement("div");
-            recorddiv.id = "recorddiv";
+            let recorddiv = document.createElement("div");
+            // recorddiv.id = "recorddiv";
+            recorddiv.classList.add("recorddiv");
 
-            namediv = document.createElement("div");
+            let namediv = document.createElement("div");
             namediv.innerText = gameState.scores[s].initials.toUpperCase();
             
-            leveldiv = document.createElement("div");
+            let leveldiv = document.createElement("div");
             leveldiv.innerText = "lvl"+gameState.scores[s].level;
             
-            scorediv = document.createElement("div");
+            let scorediv = document.createElement("div");
             scorediv.innerText = gameState.scores[s].score;
             
             recorddiv.append( namediv );
@@ -128,30 +128,83 @@ function GameManager(canvas) {
             
             scorelist.append( recorddiv );
         }
+
+        if (gameState.level >= 0){
+
+            let h2 = document.createElement("h3");
+            h2.innerText = "Your Current Score"
+
+            let recorddiv = document.createElement("div");
+            // recorddiv.id = "recorddiv";
+            recorddiv.classList.add("recorddiv");
+
+            let namediv = document.createElement("div");
+            namediv.innerText = gameState.initials;
+            
+            let leveldiv = document.createElement("div");
+            leveldiv.innerText = "lvl" + (gameState.level + 1);
+            
+            let scorediv = document.createElement("div");
+            scorediv.innerText = gameState.score;
+
+            recorddiv.append( namediv );
+            recorddiv.append( leveldiv );
+            recorddiv.append( scorediv );
+            scorelist.append( h2 );
+            scorelist.append( recorddiv );
+
+            
+        }
+    }
+
+
+    document.getElementById("savebutton").addEventListener("click",submitForm);
+    document.getElementById("playagainbutton").addEventListener("click",restart);
+
+
+    function restart(){
+        // console.log("** in restart")
+        // gameState.level = -1;
+        // gameState.gameState = "splash";
+        // gameState.lastState = "";
+        // gameState.showCenter = true;
+        // gameState.gemsSelected = 0;
+        // gameState.score = 0;
+        // gameState.initials = "";
+        // gameState.lastScore = 0;
+
+        //  rand = LCG(17191);  
+        //  bag = new GrabBag(0,3,5,rand); 
+        
+        window.location.reload();
     }
 
     function clearLevel(){
+        console.log("** in clearLevel");
+
         eventBus.post("newLevel");
+        infoBusCallback();
 
         if (gameState.level < 20)
             gameState.level += 1;
         buildLevel();
-
-        // sceneObjects = [];
-
     }
 
     function  buildLevel(){
-        rand = LCG(gameState.levelData[0].seed);  
-        bag = new GrabBag(0,gameState.levelData[gameState.level].colors,gameState.levelData[0].dups,rand); 
+        console.log("** in buildLevel");
+
+        gameState.colorCount = [0,0,0,0,0,0,0,0];
+        rand = LCG(gameState.levelData[gameState.level].seed);  
+        bag = new GrabBag(0,gameState.levelData[gameState.level].colors,gameState.levelData[gameState.level].dups,rand); 
+
         for (let y = 0; y < height; y++) 
         for (let x = -1; x < 2; x++){
             for (let z = -1; z < 2; z++){
                 if (x === 0 && z === 0 && !gameState.showCenter) continue;
                 let rnum = bag.getRndNumber();
-                let gem = new Gem(scene, eventBus, levelObjects, x,y,z, geometries[2], rnum);
+                gameState.colorCount[rnum]++;
+                let gem = new Gem(scene, eventBus, gameState, levelObjects, x,y,z, geometries[2], rnum);
                 sceneObjects.push(gem);
-                // level.object.add(gem.object);
             }
         }
     }
@@ -159,6 +212,7 @@ function GameManager(canvas) {
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
+        if (gameState.gameState === "playing")
         sceneObjects.forEach( obj => obj.update(elapsedTime) );
 
         // let removedObjects = sceneObjects.filter( subject => subject.del === true );
@@ -167,84 +221,76 @@ function GameManager(canvas) {
 
         if (sceneObjects.length === 8 && gameState.gameState ==="playing"){
             gameState.gameState = "winner";
-
-            
-        // ask for initials
-
-        // post initials and score
-
         };
 
-        hideAll();
+        if (gameState.gameState != gameState.lastState){ 
 
-        switch (gameState.gameState) {
-            case "splash":
-                document.getElementById("splash").classList.remove("hidden");
-            break;
+            gameState.lastState = gameState.gameState;
 
-            // case "scoreboard":
-            //     document.getElementById("scoreboard").classList.remove("hidden");
-            // break;
+            hideAll();
 
-            case "winner":
-                document.querySelector("#winner h1").innerText = `Level ${gameState.level+ 1} completed.`;
-                document.getElementById("winner").classList.remove("hidden");
-            break;
+            switch (gameState.gameState) {
+                case "splash":
+                    document.getElementById("startbutton").innerText = 
+                        (gameState.level >= 0) ? "Next Level" : "Start";
+                    document.getElementById("splash").classList.remove("hidden");
+                break;
 
-            // case "loser":
-            //     document.getElementById("loser").classList.remove("hidden");
-            // break;
+                // case "scoreboard":
+                //     document.getElementById("scoreboard").classList.remove("hidden");
+                // break;
 
-            case "options":
-                document.getElementById("splash").classList.add("hidden");                
-            break;
-            
-            case "instructions":
-                document.getElementById("instructions").classList.remove("hidden");
-            break;
+                case "winner":
+                    document.querySelector("#winner h1").innerText = `Level ${gameState.level+ 1} completed.`;
+                    document.getElementById("winner").classList.remove("hidden");
+                break;
 
-            case "playing":
-                document.getElementById("score").classList.remove("hidden");
-            break;
-            
+                case "loser":
+                    document.getElementById("loser").classList.remove("hidden");
+                break;
 
-            default:
-            break;
+                case "options":
+                    document.getElementById("splash").classList.add("hidden");                
+                break;
+                
+                case "instructions":
+                    document.getElementById("instructions").classList.remove("hidden");
+                break;
+
+                case "playing":
+                    document.getElementById("score").classList.remove("hidden");
+                break;
+                
+
+                default:
+                break;
+            }
         }
-
         renderer.render(scene, camera);
     }
 
     function hideAll(){
         // document.getElementById("scoreboard").classList.add("hidden");
         document.getElementById("winner").classList.add("hidden");
-        // document.getElementById("loser").classList.add("hidden");
+        document.getElementById("loser").classList.add("hidden");
         document.getElementById("options").classList.add("hidden");
         document.getElementById("splash").classList.add("hidden");
         document.getElementById("instructions").classList.add("hidden");
-        document.getElementById("score").classList.add("hidden");
+        // document.getElementById("score").classList.add("hidden");
     }
-
-
-/*********   Need to complete    *********/
-
-    function insertSCore(){
-
-    }
-
-
-
-
 
     function selectedBusCallback(){
-        gameState.gemsSelected = gameState.gemsSelected + 1;;
+        gameState.gemsSelected = gameState.gemsSelected + 1;
+        
     }
 
-    function removedBusCallback(){
+    function removedBusCallback(eventType, material){
         // console.log("Number removed", gameState.gemsSelected );
         gameState.score += gameState.gemsSelected * gameState.gemsSelected * (gameState.level+1);
         document.getElementById("scorevalue").innerText = gameState.score ;
+        gameState.colorCount[material]-= gameState.gemsSelected;
         gameState.gemsSelected = 0;
+        gameOverCheck();
     }
 
     function clearBusCallback(){
@@ -254,7 +300,7 @@ function GameManager(canvas) {
     function newGemBusCallback(eventType, material, localPosition, globalPosition){
         let position = levelObjects[Math.round(globalPosition.y)].object.worldToLocal(globalPosition);
 
-        let gem = new Gem(scene, eventBus, levelObjects, Math.round(position.x), Math.round(position.y), Math.round(position.z), geometries[2], material);
+        let gem = new Gem(scene, eventBus, gameState, levelObjects, Math.round(position.x), Math.round(position.y), Math.round(position.z), geometries[2], material);
         sceneObjects.push(gem);
         levelObjects[Math.round(globalPosition.y)].object.add(gem.object);
     } 
@@ -263,13 +309,16 @@ function GameManager(canvas) {
         console.log("---  gamestate in call back ---")
         console.log(gameState);
 
-        // clearLevel();
+        // console.log("--- color counts ===");
+        // console.log(gameState.colorCount);
 
-        console.log("--- sceneObject info ---");
-        console.log(sceneObjects);
+        // console.log("--- sceneObject info ---");
+        // console.log(sceneObjects);
 
-        console.log("--- eventBus info ---");
+        // console.log("--- eventBus info ---");
         // console.log(eventBus.eventObjects);
+
+        // gameOverCheck();
     }
 
     function dropGemsBusCallback(){
@@ -355,11 +404,12 @@ function GameManager(canvas) {
     }
 
     this.startButtonEvent = function(e){
+        console.log("start button pressed!");
+
         e.preventDefault();
 
         gameState.gameState = "playing";
         clearLevel();
-        console.log("start button pressed!")
     }
 
     this.instructionsButtonEvent = function(e){
@@ -397,17 +447,19 @@ function GameManager(canvas) {
     }
 
 
-    document.getElementById("savebutton").addEventListener("click",submitForm);
+    // document.getElementById("savebutton").addEventListener("click",submitForm);
 
 
     function submitForm(event){
+        if (!document.getElementById("initials").value) return;
         console.log("IN SUBMIT FORM");
 
         event.preventDefault();
+
+        gameState.initials = document.getElementById("initials").value.toUpperCase();
         
-        // var baseUrl = apiurl;
         var postObject = {  
-            'initials': document.getElementById("initials").value,
+            'initials': document.getElementById("initials").value.toUpperCase(),
             'level': (gameState.level+1),
             'score': gameState.score
         };
@@ -441,14 +493,34 @@ function GameManager(canvas) {
             return;
         }
 
-
         for (var i = 0, len = gameState.scores.length; i < len; i++) {
-            if (newScore.score < gameState.scores[i].score) {
+            if (newScore.score > gameState.scores[i].score) {
                 gameState.scores.splice(i, 0, newScore);
                 break;
             }
         }
         
+    }
+
+    function animationEndedBusCallback(){
+        gameOverCheck();
+    }
+
+    function gameOverCheck(){
+        gameOver = false;
+
+        for (let index = 0; index <= gameState.levelData[gameState.level].colors; index++) {
+            if (gameState.colorCount[index] === 1){
+                gameOver = true;
+                gameState.gameState = "loser";
+            }
+            
+
+        }
+
+
+        console.log("Game Over = ", gameOver);
+
     }
 
 

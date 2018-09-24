@@ -26,7 +26,7 @@ function EventBus() {
     }
 
     /**
-     * [post Post an envent on the event bus]
+     * [post Post an event on the event bus]
      * @param  {[string]} eventType [event]
      * @param  {[object]} argument  [an optional argument]
      */

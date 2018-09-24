@@ -12,8 +12,6 @@ function Lighting(scene) {
 	scene.add(light);
 
 	this.update = function(time) {
-		light.position.x = (Math.sin(time))*50;
-		// light.intensity = (Math.sin(time)+1.5)/.5;
-		// light.color.setHSL( Math.sin(time), 0.5, 0.5 );
+		// light.position.x = (Math.sin(time))*150;
 	}
 }

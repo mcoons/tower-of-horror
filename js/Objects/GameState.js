@@ -3,9 +3,9 @@ class GameState{
     constructor(){
     this.levelData = [
         {seed: 17191,  colors:1, dups: 6},
-        {seed: 11491, colors:1, dups: 4},
-        {seed: 13191, colors:1, dups: 2},
-        {seed: 17791, colors:1, dups: 1},
+        {seed: 16149, colors:1, dups: 4},
+        {seed: 3191, colors:1, dups: 2},
+        {seed: 7791, colors:1, dups: 1},
 
         {seed: 11111,  colors:2, dups: 6},
         {seed: 111511, colors:2, dups: 4},
@@ -45,12 +45,16 @@ class GameState{
     ];
     this.level = -1;
     this.gameState = "splash";
+    this.lastState = "";
     this.mode;
     this.showCenter = true;
     this.gemsSelected = 0;
-    this.lastScore = 0;
     this.score = 0;
     this.scores = [];
+    this.colorCount = [0,0,0,0,0,0,0,0];
+    this.initials;
+    this.lastScore = 0;
+    
     }
 
 }

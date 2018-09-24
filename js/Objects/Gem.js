@@ -1,4 +1,4 @@
-function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
+function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, material){
         const materials = [
         new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
         new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
@@ -13,7 +13,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
     ];
 
     var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
-
 
     var animationInProgress = false;
 
@@ -104,6 +103,7 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
 
                 my.del = true;
                 this.parent.remove(gem);
+                // gameState.colorCount[my.material]--;
 
                 eventBus.post('removed', my.material, worldPosition);
                 eventBus.post('dropGems');
@@ -113,7 +113,6 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
                 eventBus.post('clear', my.material, worldPosition);
 
                 my.selected = true;
-                // gem.material = materials[6]; // material to white
                 gem.material = selectedMaterial; // material to white
                 eventBus.post('selected', my.material, worldPosition);
             }
@@ -237,5 +236,5 @@ function Gem(scene, eventBus, levelObjects, x, y, z, geometry, material){
         eventBus.unsubscribe('animationEnded', animationEndedBusCallback);
         eventBus.unsubscribe('newLevel', newLevelBusCallback);
     }
-    
+
 }
