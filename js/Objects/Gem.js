@@ -61,7 +61,7 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
         worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
         if (worldPosition.z > .95){
-            gem.rotation.y -=.02;
+            gem.rotation.y -=.01;
             if (gem.rotation.y < -2*Math.PI) {
                 gem.rotation.y = 0;
             }

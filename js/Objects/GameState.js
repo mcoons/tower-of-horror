@@ -4,8 +4,8 @@ class GameState{
     this.levelData = [
         {seed: 17191,  colors:1, dups: 6},
         {seed: 16149, colors:1, dups: 4},
-        {seed: 3191, colors:1, dups: 2},
-        {seed: 7791, colors:1, dups: 1},
+        {seed: 3191, colors:2, dups: 2},
+        {seed: 7791, colors:2, dups: 1},
 
         {seed: 11111,  colors:2, dups: 6},
         {seed: 111511, colors:2, dups: 4},
