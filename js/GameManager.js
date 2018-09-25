@@ -210,6 +210,7 @@ function GameManager(canvas) {
                     document.getElementById("startbutton").innerText = 
                         (gameState.level >= 0) ? "Next Level" : "Start";
                     document.getElementById("splash").classList.remove("hidden");
+                    if (gameState.level === -1) document.getElementById("backdrop").classList.remove("hidden");    
                 break;
 
                 case "winner":
@@ -248,6 +249,7 @@ function GameManager(canvas) {
         document.getElementById("options").classList.add("hidden");
         document.getElementById("splash").classList.add("hidden");
         document.getElementById("instructions").classList.add("hidden");
+        document.getElementById("backdrop").classList.add("hidden");
         // document.getElementById("score").classList.add("hidden");
     }
 
