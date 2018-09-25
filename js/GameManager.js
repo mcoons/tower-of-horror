@@ -14,6 +14,7 @@ function GameManager(canvas) {
     const camera = buildCamera(screenDimensions);
     var eventBus = new EventBus();
     var sceneObjects = createSceneObjects(scene);
+    var explosionInProgress = false;
 
 
     const apiurl = "https://agile-citadel-53491.herokuapp.com/api";
@@ -39,8 +40,10 @@ function GameManager(canvas) {
     eventBus.subscribe("selected", selectedBusCallback);
     eventBus.subscribe('removed', removedBusCallback);
     eventBus.subscribe('clear', clearBusCallback);
-    eventBus.subscribe('animationEnded', animationEndedBusCallback);
+    // eventBus.subscribe('animationEnded', animationEndedBusCallback);
     eventBus.subscribe('explosion', explosionBusCallback);
+    eventBus.subscribe('explosionStarting', explosionStartingBusCallback);
+    eventBus.subscribe('explosionEnded', explosionEndedBusCallback);
 
 
     function buildRender({ width, height }) {
@@ -321,9 +324,11 @@ function GameManager(canvas) {
             // skip loop if the property is from prototype
             if (!columns.hasOwnProperty(key)) continue;
 
-            columns[key].forEach( (element, index) => setTimeout( function(){ eventBus.post(  element.uuid, "moveto", index)}, 200));
-// columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
-
+            if (explosionInProgress){
+                columns[key].forEach( (element, index) => setTimeout( function(){ eventBus.post(  element.uuid, "moveto", index)}, 300));
+            } else {
+                columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
+            }
         
         
         }        
@@ -467,6 +472,17 @@ function GameManager(canvas) {
     function animationEndedBusCallback(){
         gameOverCheck();
     }
+
+        
+    function explosionStartingBusCallback(){
+        explosionInProgress = true
+    }
+
+    function explosionEndedBusCallback(){
+        explosionInProgress = false;
+    }
+
+
 
     function gameOverCheck(){
         gameOver = false;

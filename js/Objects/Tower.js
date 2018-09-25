@@ -1,8 +1,18 @@
 function Tower(scene, eventBus){
-    var animationInProgress = false;
+    // var animationInProgress = false;
+    var explosionInProgress = false;
+    var rotationInProgress = false;
+    var droppingInProgress = false;
 
-    eventBus.subscribe('animationStarting', animationStartingBusCallback);
-    eventBus.subscribe('animationEnded', animationEndedBusCallback);
+
+    // eventBus.subscribe('animationStarting', animationStartingBusCallback);
+    // eventBus.subscribe('animationEnded', animationEndedBusCallback);
+    eventBus.subscribe('explosionStarting', explosionStartingBusCallback);
+    eventBus.subscribe('explosionEnded', explosionEndedBusCallback);
+    eventBus.subscribe('rotationStarting', rotationStartingBusCallback);
+    eventBus.subscribe('rotationEnded', rotationEndedBusCallback);
+    eventBus.subscribe('droppingStarting', droppingStartingBusCallback);
+    eventBus.subscribe('droppingEnded', droppingEndedBusCallback);
 
     var my=this;
     this.del = false;
@@ -29,7 +39,8 @@ function Tower(scene, eventBus){
                 this.rotating = false;
                 tower.rotation.y = this.endRotation;
 
-                eventBus.post('animationEnded');
+                // eventBus.post('animationEnded');
+                eventBus.post('rotationEnded');
                 return;
             }
             // x = A + t * (B - A)
@@ -40,18 +51,44 @@ function Tower(scene, eventBus){
     }
 
 
-    function animationStartingBusCallback(){
-        animationInProgress = true
+    // function animationStartingBusCallback(){
+    //     animationInProgress = true
+    // }
+
+
+    // function animationEndedBusCallback(){
+    //     animationInProgress = false;
+    // }
+    
+        
+    function explosionStartingBusCallback(){
+        explosionInProgress = true
     }
 
-
-    function animationEndedBusCallback(){
-        animationInProgress = false;
+    function explosionEndedBusCallback(){
+        explosionInProgress = false;
     }
     
+    function droppingStartingBusCallback(){
+        droppingInProgress = true
+    }
+
+    function droppingEndedBusCallback(){
+        droppingInProgress = false;
+    }
+
+    function rotationStartingBusCallback(){
+        rotationInProgress = true
+    }
+
+    function rotationEndedBusCallback(){
+        rotationInProgress = false;
+    }
+
     function rightTowerClick(event){
-        if (animationInProgress) return;
-        eventBus.post('animationStarting');
+        if (explosionInProgress || rotationInProgress || droppingInProgress) return;
+        // eventBus.post('animationStarting');
+        eventBus.post('rotationStarting');
 
         if (my.rotating) return; 
 
@@ -62,8 +99,9 @@ function Tower(scene, eventBus){
     }
 
     function leftTowerClick(event){
-        if (animationInProgress) return;
-        eventBus.post('animationStarting');
+        if (explosionInProgress || rotationInProgress || droppingInProgress) return;
+        // eventBus.post('animationStarting');
+        eventBus.post('rotationStarting');
 
         if (my.rotating) return; 
 

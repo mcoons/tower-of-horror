@@ -24,7 +24,10 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
 
     var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
 
-    var animationInProgress = false;
+    // var animationInProgress = false;
+    var explosionInProgress = false;
+    var rotationInProgress = false;
+    var droppingInProgress = false;
 
     var my=this;
     this.material = material;
@@ -76,7 +79,8 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
             if ( elapsed >= this.droppingLength ) {
                 this.dropping = false;
                 gem.position.y = this.endDropping;
-                eventBus.post('animationEnded');
+                // eventBus.post('animationEnded');
+                eventBus.post('droppingEnded');
 
                 worldPosition = new THREE.Vector3();
                 worldPosition.setFromMatrixPosition( my.object.matrixWorld );
@@ -98,7 +102,7 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
     
     function gemClicked(event){
 
-        if (animationInProgress) return;
+        if (explosionInProgress || rotationInProgress || droppingInProgress) return;
 
         var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( this.matrixWorld );
@@ -141,7 +145,8 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
             case 'moveto':
                 if (my.dropping || Math.round(my.object.position.y) === value) return; 
 
-                eventBus.post('animationStarting');
+                // eventBus.post('animationStarting');
+                eventBus.post('droppingStarting');
         
                 my.dropping = true;
                 my.droppingStartTime = (new Date()).getTime() / 1000;
@@ -206,15 +211,39 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
     }
 
 
-    function animationStartingBusCallback(){
-        animationInProgress = true
+    // function animationStartingBusCallback(){
+    //     animationInProgress = true
+    // }
+
+
+    // function animationEndedBusCallback(){
+    //     animationInProgress = false;
+    // }
+
+    function explosionStartingBusCallback(){
+        explosionInProgress = true
     }
 
 
-    function animationEndedBusCallback(){
-        animationInProgress = false;
+    function explosionEndedBusCallback(){
+        explosionInProgress = false;
     }
 
+    function droppingStartingBusCallback(){
+        droppingInProgress = true
+    }
+
+    function droppingEndedBusCallback(){
+        droppingInProgress = false;
+    }
+
+    function rotationStartingBusCallback(){
+        rotationInProgress = true
+    }
+
+    function rotationEndedBusCallback(){
+        rotationInProgress = false;
+    }    
 
     function distance(p1,p2){
         var dx = p1.x - p2.x; 
@@ -228,20 +257,28 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
         eventBus.subscribe('selected', selectedBusCallback);
         eventBus.subscribe('removed', removedBusCallback);
         eventBus.subscribe(my.id, myChannelBusCallback);
-        eventBus.subscribe('animationStarting', animationStartingBusCallback);
-        eventBus.subscribe('animationEnded', animationEndedBusCallback);
+        // eventBus.subscribe('animationStarting', animationStartingBusCallback);
+        // eventBus.subscribe('animationEnded', animationEndedBusCallback);
         eventBus.subscribe('newLevel', newLevelBusCallback);
-
-    }
+        eventBus.subscribe('explosionStarting', explosionStartingBusCallback);
+        eventBus.subscribe('explosionEnded', explosionEndedBusCallback);
+        eventBus.subscribe('rotationStarting', rotationStartingBusCallback);
+        eventBus.subscribe('rotationEnded', rotationEndedBusCallback);
+        eventBus.subscribe('droppingStarting', droppingStartingBusCallback);
+        eventBus.subscribe('droppingEnded', droppingEndedBusCallback);    }
 
     function unsubscribe(){
         eventBus.unsubscribe('clear', clearBusCallback);
         eventBus.unsubscribe('selected', selectedBusCallback);
         eventBus.unsubscribe('removed', removedBusCallback);  
         eventBus.unsubscribe(my.id, myChannelBusCallback);
-        eventBus.unsubscribe('animationStarting', animationStartingBusCallback);
-        eventBus.unsubscribe('animationEnded', animationEndedBusCallback);
+        // eventBus.unsubscribe('animationStarting', animationStartingBusCallback);
+        // eventBus.unsubscribe('animationEnded', animationEndedBusCallback);
         eventBus.unsubscribe('newLevel', newLevelBusCallback);
-    }
-
+        eventBus.unsubscribe('explosionStarting', explosionStartingBusCallback);
+        eventBus.unsubscribe('explosionEnded', explosionEndedBusCallback);    }
+        eventBus.unsubscribe('rotationStarting', rotationStartingBusCallback);
+        eventBus.unsubscribe('rotationEnded', rotationEndedBusCallback);
+        eventBus.unsubscribe('droppingStarting', droppingStartingBusCallback);
+        eventBus.unsubscribe('droppingEnded', droppingEndedBusCallback);
 }
