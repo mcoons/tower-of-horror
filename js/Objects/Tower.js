@@ -1,12 +1,8 @@
 function Tower(scene, eventBus){
-    // var animationInProgress = false;
     var explosionInProgress = false;
     var rotationInProgress = false;
     var droppingInProgress = false;
 
-
-    // eventBus.subscribe('animationStarting', animationStartingBusCallback);
-    // eventBus.subscribe('animationEnded', animationEndedBusCallback);
     eventBus.subscribe('explosionStarting', explosionStartingBusCallback);
     eventBus.subscribe('explosionEnded', explosionEndedBusCallback);
     eventBus.subscribe('rotationStarting', rotationStartingBusCallback);
@@ -38,29 +34,14 @@ function Tower(scene, eventBus){
             if ( elapsed >= this.rotationLength ) {
                 this.rotating = false;
                 tower.rotation.y = this.endRotation;
-
-                // eventBus.post('animationEnded');
                 eventBus.post('rotationEnded');
                 return;
             }
-            // x = A + t * (B - A)
-
             let newRot = this.startRotation + elapsed * (this.endRotation - this.startRotation) * (1/this.rotationLength);
             tower.rotation.y = newRot;
         }    
     }
 
-
-    // function animationStartingBusCallback(){
-    //     animationInProgress = true
-    // }
-
-
-    // function animationEndedBusCallback(){
-    //     animationInProgress = false;
-    // }
-    
-        
     function explosionStartingBusCallback(){
         explosionInProgress = true
     }
@@ -87,8 +68,8 @@ function Tower(scene, eventBus){
 
     function rightTowerClick(event){
         if (explosionInProgress || rotationInProgress || droppingInProgress) return;
-        // eventBus.post('animationStarting');
         eventBus.post('rotationStarting');
+        soundRotate();
 
         if (my.rotating) return; 
 
@@ -100,9 +81,9 @@ function Tower(scene, eventBus){
 
     function leftTowerClick(event){
         if (explosionInProgress || rotationInProgress || droppingInProgress) return;
-        // eventBus.post('animationStarting');
         eventBus.post('rotationStarting');
-
+        soundRotate();
+        
         if (my.rotating) return; 
 
         my.rotating = true;

@@ -190,7 +190,7 @@ function GameManager(canvas) {
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
-        if (gameState.gameState === "playing")
+        // if (gameState.gameState === "playing")
         sceneObjects.forEach( obj => obj.update(elapsedTime) );
 
         sceneObjects = sceneObjects.filter( subject => subject.del === false );
@@ -334,60 +334,16 @@ function GameManager(canvas) {
         }        
     }
 
-    // function columnInfoBusCallback(){
-    //     console.log("--- sceneObject info ---");
-    //     console.log(sceneObjects);
-
-    //     // let tower = sceneObjects.filter( obj => obj.name = "Tower");
-    //     let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
-
-    //     console.log("--- tower ---");
-    //     console.log(tower);
-    //     let levels = tower.object.children;
-
-    //     let columns = {
-    //         "-1,-1": [],
-    //         "-1,0": [],
-    //         "-1,1": [],
-    //         "0,-1": [],
-    //         "0,0": [],
-    //         "0,1": [],
-    //         "1,-1": [],
-    //         "1,0": [],
-    //         "1,1": []
-    //     };
-
-    //     levels.forEach( (level, index) => {
-    //         for (let x = -1; x < 2; x++ ){
-    //             for (let z = -1; z < 2; z++){
-    //                 if (x === 0 && z === 0) continue;
-
-    //                 let children = level.children;
-    //                 let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
-    //                 if (columnData[0]) columns[x+','+z].push(columnData[0]);
-                
-    //             }  // z
-    //         } // x
-    //     }) // foreach
-            
-    //     for (var key in columns) {
-    //         // skip loop if the property is from prototype
-    //         if (!columns.hasOwnProperty(key)) continue;
-
-    //         columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
-    //     }        
-    // }
-
     this.startButtonEvent = function(e){
         e.preventDefault();
-
+        soundClick();
         gameState.gameState = "playing";
         clearLevel();
     }
 
     this.instructionsButtonEvent = function(e){
         e.preventDefault();
-
+        soundClick();
         gameState.gameState = "instructions";
     }
 
@@ -419,6 +375,7 @@ function GameManager(canvas) {
     }
 
     function submitForm(event){
+        soundClick();
         if (!document.getElementById("initials").value) return;
 
         event.preventDefault();

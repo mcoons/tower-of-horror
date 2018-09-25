@@ -90,6 +90,7 @@ function Level(scene, eventBus, pos){
         if (explosionInProgress || rotationInProgress || droppingInProgress) return;
         // eventBus.post('animationStarting');
         eventBus.post('rotationStarting');
+        soundRotate();
 
         if (my.rotating) return; 
 
@@ -105,7 +106,7 @@ function Level(scene, eventBus, pos){
         if (explosionInProgress || rotationInProgress || droppingInProgress) return;
         // eventBus.post('animationStarting');
         eventBus.post('rotationStarting');
-
+        soundRotate();
         if (my.rotating) return; 
 
         eventBus.post('clear');

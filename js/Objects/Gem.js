@@ -22,7 +22,7 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
     //     new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
     // ];
 
-    var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
+    // var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
 
     // var animationInProgress = false;
     var explosionInProgress = false;
@@ -112,16 +112,20 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
         if (event.button === 0){
             if (my.selected && selectedCount > 1){
                 unsubscribe();      
-
+                soundEplode();
                 my.del = true;
                 this.parent.remove(gem);
 
                 eventBus.post('removed', my.material, worldPosition);
                 eventBus.post('dropGems');
             } else if (my.selected && selectedCount === 1){
-                console.log("EEEERRRRRPPPP")
+                console.log("EEEERRRRRPPPP");
+                soundBadSelect();
+                gem.material = badSelectedMaterial; // material to red
+
             } else {
                 eventBus.post('clear', my.material, worldPosition);
+                soundSelect();
 
                 my.selected = true;
                 gem.material = selectedMaterial; // material to white
