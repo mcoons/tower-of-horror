@@ -1,20 +1,20 @@
 var matDiffuse = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_COLOR.jpg' );
-matDiffuse.repeat.set( .8, .5 );
+matDiffuse.repeat.set( 1, 2 );
 
 var matDisplacement = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_DISP.png' );
-matDisplacement.repeat.set( .8, .5 );
+matDisplacement.repeat.set( 1, 2 );
 
 var matNormal = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_NORM.jpg' );
-matNormal.repeat.set( .8, .5 );
+matNormal.repeat.set( 1, 2 );
 
 var matRoughness = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_ROUGH.jpg' );
-matRoughness.repeat.set( .8, .5 );
+matRoughness.repeat.set( 1, 2 );
 
 var matOCC = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_OCC.jpg' );
-matOCC.repeat.set( .8, .5 );
+matOCC.repeat.set( 1, 2 );
 
 var matMask = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_MASK.jpg' );
-matMask.repeat.set( .8, .5 );
+matMask.repeat.set( 1, 2 );
 
 var matMaterial = new THREE.MeshStandardMaterial( {color: 'red', map: matDiffuse } );
 matMaterial.transparent = true;
@@ -80,4 +80,25 @@ matMaterial9.roughnessMap = matRoughness;
 matMaterial9.aoMap = matOCC;
 
 
+const materials = [
+    matMaterial,
+    matMaterial2,
+    matMaterial3,
+    matMaterial4,
+    matMaterial5,
+    matMaterial6,
+    matMaterial7,
+    matMaterial8,
+    matMaterial9,
 
+new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
+new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
+new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
+new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
+new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
+new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
+new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
+new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
+new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
+new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
+];

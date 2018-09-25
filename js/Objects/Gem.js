@@ -1,26 +1,26 @@
 function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, material){
-        const materials = [
-            matMaterial,
-            matMaterial2,
-            matMaterial3,
-            matMaterial4,
-            matMaterial5,
-            matMaterial6,
-            matMaterial7,
-            matMaterial8,
-            matMaterial9,
+    //     const materials = [
+    //         matMaterial,
+    //         matMaterial2,
+    //         matMaterial3,
+    //         matMaterial4,
+    //         matMaterial5,
+    //         matMaterial6,
+    //         matMaterial7,
+    //         matMaterial8,
+    //         matMaterial9,
 
-        new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
-        new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
-        new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
-        new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
-        new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
-        new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
-        new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
-        new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
-        new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
-        new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
-    ];
+    //     new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
+    //     new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
+    //     new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
+    //     new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
+    //     new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
+    //     new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
+    //     new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
+    //     new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
+    //     new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
+    //     new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
+    // ];
 
     var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
 
@@ -49,8 +49,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
     gem.name = x + "," + y + "," + z;
     scene.add(gem);
 
-    // console.log("--- level objects in gem ---");
-    // console.log(levelObjects);
     levelObjects[y].object.add(gem);
 
   
@@ -113,7 +111,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
 
                 my.del = true;
                 this.parent.remove(gem);
-                // gameState.colorCount[my.material]--;
 
                 eventBus.post('removed', my.material, worldPosition);
                 eventBus.post('dropGems');
@@ -129,7 +126,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
         } else {
             console.log(`Right click on: ${this.name} with mouse button ${event.button}`);
         }
-        // console.log("selected = ",selectedCount);
     }
 
     function newLevelBusCallback(){
@@ -185,7 +181,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
 
         if (my.material === material && distance(worldPosition, position) < 1.05){
             my.selected = true;
-            // gem.material = materials[6]; // material to white
             gem.material = selectedMaterial; // material to white
             eventBus.post('selected', my.material, worldPosition);                       
         }
@@ -198,8 +193,10 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
         var worldPosition = new THREE.Vector3();
         worldPosition.setFromMatrixPosition( my.object.matrixWorld );
 
+        
         if (my.selected){
-
+            eventBus.post("explosion", material, worldPosition);
+            
             unsubscribe();
 
             my.del = true;

@@ -19,22 +19,14 @@ function GameManager(canvas) {
     const apiurl = "https://agile-citadel-53491.herokuapp.com/api";
 
     window.scene = scene;
-    
-    // console.log(eventBus);
-    // console.log(scene.children);
-    // console.log(sceneObjects);
-
 
     fetch(apiurl)
-    // fetch("http://localhost:3030/api")
-
     .then(response => response.json())
     .then(response => gameState.scores = response.scores)
     .then(() => buildScoreList())
-    // .then(response => console.log(response.scores[0]))
 
-    console.log("---  gamestate in global ---")
-    console.log(gameState);
+    // console.log("---  gamestate in global ---")
+    // console.log(gameState);
 
     function buildScene() {
         const scene = new THREE.Scene();
@@ -42,13 +34,13 @@ function GameManager(canvas) {
     }
 
     eventBus.subscribe("info", infoBusCallback);
-    // eventBus.subscribe("info", columnInfoBusCallback);
     eventBus.subscribe("newGem", newGemBusCallback);
     eventBus.subscribe("dropGems", dropGemsBusCallback);
     eventBus.subscribe("selected", selectedBusCallback);
     eventBus.subscribe('removed', removedBusCallback);
     eventBus.subscribe('clear', clearBusCallback);
     eventBus.subscribe('animationEnded', animationEndedBusCallback);
+    eventBus.subscribe('explosion', explosionBusCallback);
 
 
     function buildRender({ width, height }) {
@@ -74,7 +66,6 @@ function GameManager(canvas) {
         const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
 
         camera.name = "camera";
-        // camera.position.set(0,2.5,12);
         camera.position.set(0,2.5,10);
 
         return camera;
@@ -164,25 +155,10 @@ function GameManager(canvas) {
 
 
     function restart(){
-        // console.log("** in restart")
-        // gameState.level = -1;
-        // gameState.gameState = "splash";
-        // gameState.lastState = "";
-        // gameState.showCenter = true;
-        // gameState.gemsSelected = 0;
-        // gameState.score = 0;
-        // gameState.initials = "";
-        // gameState.lastScore = 0;
-
-        //  rand = LCG(17191);  
-        //  bag = new GrabBag(0,3,5,rand); 
-
         window.location.reload();
     }
 
     function clearLevel(){
-        console.log("** in clearLevel");
-
         eventBus.post("newLevel");
         infoBusCallback();
 
@@ -192,8 +168,6 @@ function GameManager(canvas) {
     }
 
     function  buildLevel(){
-        console.log("** in buildLevel");
-
         gameState.colorCount = [0,0,0,0,0,0,0,0];
         rand = LCG(gameState.levelData[gameState.level].seed);  
         bag = new GrabBag(0,gameState.levelData[gameState.level].colors,gameState.levelData[gameState.level].dups,rand); 
@@ -216,8 +190,6 @@ function GameManager(canvas) {
         if (gameState.gameState === "playing")
         sceneObjects.forEach( obj => obj.update(elapsedTime) );
 
-        // let removedObjects = sceneObjects.filter( subject => subject.del === true );
-
         sceneObjects = sceneObjects.filter( subject => subject.del === false );
 
         if (sceneObjects.length === 8 && gameState.gameState ==="playing"){
@@ -236,10 +208,6 @@ function GameManager(canvas) {
                         (gameState.level >= 0) ? "Next Level" : "Start";
                     document.getElementById("splash").classList.remove("hidden");
                 break;
-
-                // case "scoreboard":
-                //     document.getElementById("scoreboard").classList.remove("hidden");
-                // break;
 
                 case "winner":
                     document.querySelector("#winner h1").innerText = `Level ${gameState.level+ 1} completed.`;
@@ -285,13 +253,20 @@ function GameManager(canvas) {
         
     }
 
-    function removedBusCallback(eventType, material){
-        // console.log("Number removed", gameState.gemsSelected );
+    function removedBusCallback(eventType, material, position){
+        let explosion = new Explosion(scene, eventBus, gameState, position.x, position.y, position.z, material);
+        sceneObjects.push(explosion);
         gameState.score += gameState.gemsSelected * gameState.gemsSelected * (gameState.level+1);
         document.getElementById("scorevalue").innerText = gameState.score ;
         gameState.colorCount[material]-= gameState.gemsSelected;
         gameState.gemsSelected = 0;
         gameOverCheck();
+    }
+
+    function explosionBusCallback(eventType, material, position){
+        let explosion = new Explosion(scene, eventBus, gameState, position.x, position.y, position.z, material);
+        sceneObjects.push(explosion);
+    
     }
 
     function clearBusCallback(){
@@ -310,23 +285,22 @@ function GameManager(canvas) {
         console.log("---  gamestate in call back ---")
         console.log(gameState);
 
-        // console.log("--- color counts ===");
-        // console.log(gameState.colorCount);
+        console.log("--- color counts ===");
+        console.log(gameState.colorCount);
 
-        // console.log("--- sceneObject info ---");
-        // console.log(sceneObjects);
+        console.log("--- sceneObject info ---");
+        console.log(sceneObjects);
 
-        // console.log("--- eventBus info ---");
-        // console.log(eventBus.eventObjects);
+        console.log("--- scene children ---");
+        console.log(scene.children);
+
+        console.log("--- eventBus info ---");
+        console.log(eventBus.eventObjects);
 
         // gameOverCheck();
     }
 
     function dropGemsBusCallback(){
-        // console.log("--- sceneObject info ---");
-        // console.log(sceneObjects);
-
-        // let tower = sceneObjects.filter( obj => obj.name = "Tower");
         let tower = sceneObjects[1]; // ???????  WILL THIS EVER CHANGE ITS INDEX  ???????
         let levels = tower.object.children;
         let columns = { "-1,-1": [], "-1,0": [], "-1,1": [], "0,-1": [], "0,0": [], "0,1": [], "1,-1": [], "1,0": [], "1,1": [] };
@@ -347,66 +321,59 @@ function GameManager(canvas) {
             // skip loop if the property is from prototype
             if (!columns.hasOwnProperty(key)) continue;
 
-            columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
+            columns[key].forEach( (element, index) => setTimeout( function(){ eventBus.post(  element.uuid, "moveto", index)}, 200));
+// columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
+
+        
+        
         }        
     }
 
-    // function infoBusCallback(){
+    // function columnInfoBusCallback(){
     //     console.log("--- sceneObject info ---");
-    //     // sceneObjects.forEach( object => console.log(object) );
     //     console.log(sceneObjects);
 
-    //     console.log("--- eventBus info ---");
-    //     console.log(eventBus.eventObjects);
+    //     // let tower = sceneObjects.filter( obj => obj.name = "Tower");
+    //     let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
+
+    //     console.log("--- tower ---");
+    //     console.log(tower);
+    //     let levels = tower.object.children;
+
+    //     let columns = {
+    //         "-1,-1": [],
+    //         "-1,0": [],
+    //         "-1,1": [],
+    //         "0,-1": [],
+    //         "0,0": [],
+    //         "0,1": [],
+    //         "1,-1": [],
+    //         "1,0": [],
+    //         "1,1": []
+    //     };
+
+    //     levels.forEach( (level, index) => {
+    //         for (let x = -1; x < 2; x++ ){
+    //             for (let z = -1; z < 2; z++){
+    //                 if (x === 0 && z === 0) continue;
+
+    //                 let children = level.children;
+    //                 let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
+    //                 if (columnData[0]) columns[x+','+z].push(columnData[0]);
+                
+    //             }  // z
+    //         } // x
+    //     }) // foreach
+            
+    //     for (var key in columns) {
+    //         // skip loop if the property is from prototype
+    //         if (!columns.hasOwnProperty(key)) continue;
+
+    //         columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
+    //     }        
     // }
 
-    function columnInfoBusCallback(){
-        console.log("--- sceneObject info ---");
-        console.log(sceneObjects);
-
-        // let tower = sceneObjects.filter( obj => obj.name = "Tower");
-        let tower = sceneObjects[1]; // ???????  WILL THIS EVEER CHANGE ITS INDEX  ???????
-
-        console.log("--- tower ---");
-        console.log(tower);
-        let levels = tower.object.children;
-
-        let columns = {
-            "-1,-1": [],
-            "-1,0": [],
-            "-1,1": [],
-            "0,-1": [],
-            "0,0": [],
-            "0,1": [],
-            "1,-1": [],
-            "1,0": [],
-            "1,1": []
-        };
-
-        levels.forEach( (level, index) => {
-            for (let x = -1; x < 2; x++ ){
-                for (let z = -1; z < 2; z++){
-                    if (x === 0 && z === 0) continue;
-
-                    let children = level.children;
-                    let columnData = children.filter(c => c.name.split(",")[0] == x  && c.name.split(",")[2] == z );
-                    if (columnData[0]) columns[x+','+z].push(columnData[0]);
-                
-                }  // z
-            } // x
-        }) // foreach
-            
-        for (var key in columns) {
-            // skip loop if the property is from prototype
-            if (!columns.hasOwnProperty(key)) continue;
-
-            columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
-        }        
-    }
-
     this.startButtonEvent = function(e){
-        console.log("start button pressed!");
-
         e.preventDefault();
 
         gameState.gameState = "playing";
@@ -417,7 +384,6 @@ function GameManager(canvas) {
         e.preventDefault();
 
         gameState.gameState = "instructions";
-        console.log("instructions button pressed!")
     }
 
     this.onWindowResize = function() {
@@ -447,13 +413,8 @@ function GameManager(canvas) {
         
     }
 
-
-    // document.getElementById("savebutton").addEventListener("click",submitForm);
-
-
     function submitForm(event){
         if (!document.getElementById("initials").value) return;
-        console.log("IN SUBMIT FORM");
 
         event.preventDefault();
 
@@ -515,13 +476,7 @@ function GameManager(canvas) {
                 gameOver = true;
                 gameState.gameState = "loser";
             }
-            
-
         }
-
-
-        console.log("Game Over = ", gameOver);
-
     }
 
 
