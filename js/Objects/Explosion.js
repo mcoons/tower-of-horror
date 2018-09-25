@@ -6,7 +6,7 @@ function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
     var color =  materials[mycolor].color;
     var movementSpeed = .05;
     var totalObjects = 5000;
-    var objectSize = .01;
+    var objectSize = .1;
     this.duration = .3;
 
     this.startTime = (new Date()).getTime() / 1000;
@@ -40,7 +40,7 @@ function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
   
     this.update = function(time){
 
-        objectSize *= .6;
+        objectSize *= .8;
         var material = new THREE.PointsMaterial( { size: objectSize,  color: color });
         this.object.material = material;
 
@@ -58,9 +58,9 @@ function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
             var pCount = totalObjects;
             while(pCount--) {
                 var particle =  this.object.geometry.vertices[pCount]
-                particle.y += dirs[pCount].y;
-                particle.x += dirs[pCount].x;
-                particle.z += dirs[pCount].z;
+                particle.y += dirs[pCount].y * Math.random() * 2;
+                particle.x += dirs[pCount].x * Math.random() * 2;
+                particle.z += dirs[pCount].z * Math.random() * 2;
             }
             this.object.geometry.verticesNeedUpdate = true;
         }

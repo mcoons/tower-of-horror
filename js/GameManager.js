@@ -228,7 +228,7 @@ function GameManager(canvas) {
                 
                 case "instructions":
                     document.getElementById("instructions").classList.remove("hidden");
-                break;
+                    document.getElementById("backdrop").classList.remove("hidden");                 break;
 
                 case "playing":
                     document.getElementById("score").classList.remove("hidden");
