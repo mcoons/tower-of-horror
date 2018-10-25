@@ -8,8 +8,7 @@ resizeCanvas();
 render();
 
 function bindEventListeners() {
-	window.onresize = resizeCanvas;
-    // window.onclick = mainListener;
+    window.onresize = resizeCanvas;
     window.ondblclick = function (e){e.preventDefault();console.log("dbl click")}
     window.oncontextmenu = mainListener;
 
@@ -21,11 +20,11 @@ function bindEventListeners() {
 }
 
 function resizeCanvas() {
-	canvas.style.width = '100%';
-	canvas.style.height= '100%';
+    canvas.style.width = '100%';
+    canvas.style.height= '100%';
 	
-	canvas.width  = canvas.offsetWidth;
-	canvas.height = canvas.offsetHeight;
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
     
     gameManager.onWindowResize();
 }
