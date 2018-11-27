@@ -39,37 +39,37 @@ matMaterial3.normalMap = matNormal;
 matMaterial3.roughnessMap = matRoughness;
 matMaterial3.aoMap = matOCC;
 
-var matMaterial4 = new THREE.MeshStandardMaterial( {color: 'darkorange', map: matDiffuse } );
+var matMaterial4 = new THREE.MeshStandardMaterial( {color: 'gold', map: matDiffuse } );
 matMaterial4.transparent = true;
 matMaterial4.normalMap = matNormal;
 matMaterial4.roughnessMap = matRoughness;
 matMaterial4.aoMap = matOCC;
 
-var matMaterial5 = new THREE.MeshStandardMaterial( {color: 'yellow', map: matDiffuse } );
+var matMaterial5 = new THREE.MeshStandardMaterial( {color: 'aqua', map: matDiffuse } );
 matMaterial5.transparent = true;
 matMaterial5.normalMap = matNormal;
 matMaterial5.roughnessMap = matRoughness;
 matMaterial5.aoMap = matOCC;
 
-var matMaterial6 = new THREE.MeshStandardMaterial( {color: 'aqua', map: matDiffuse } );
+var matMaterial6 = new THREE.MeshStandardMaterial( {color: 'lime', map: matDiffuse } );
 matMaterial6.transparent = true;
 matMaterial6.normalMap = matNormal;
 matMaterial6.roughnessMap = matRoughness;
 matMaterial6.aoMap = matOCC;
 
-var matMaterial7 = new THREE.MeshStandardMaterial( {color: 'lime', map: matDiffuse } );
+var matMaterial7 = new THREE.MeshStandardMaterial( {color: 'silver', map: matDiffuse } );
 matMaterial7.transparent = true;
 matMaterial7.normalMap = matNormal;
 matMaterial7.roughnessMap = matRoughness;
 matMaterial7.aoMap = matOCC;
 
-var matMaterial8 = new THREE.MeshStandardMaterial( {color: 'silver', map: matDiffuse } );
+var matMaterial8 = new THREE.MeshStandardMaterial( {color: 'magenta', map: matDiffuse } );
 matMaterial8.transparent = true;
 matMaterial8.normalMap = matNormal;
 matMaterial8.roughnessMap = matRoughness;
 matMaterial8.aoMap = matOCC;
 
-var matMaterial9 = new THREE.MeshStandardMaterial( {color: 'magenta', map: matDiffuse } );
+var matMaterial9 = new THREE.MeshStandardMaterial( {color: 'black', map: matDiffuse } );
 matMaterial9.transparent = true;
 matMaterial9.normalMap = matNormal;
 matMaterial9.roughnessMap = matRoughness;

@@ -1,4 +1,4 @@
-
+// Michael Coons
 // Grab bag randomizer class (seeded)
 
 // A bag that holds one of each integer from 0 to 99 <default>

@@ -6,7 +6,7 @@ function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
     var color =  materials[mycolor].color;
     var movementSpeed = .05;
     var totalObjects = 5000;
-    var objectSize = .1;
+    var objectSize = .05;
     this.duration = .3;
 
     this.startTime = (new Date()).getTime() / 1000;

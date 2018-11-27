@@ -9,11 +9,11 @@ render();
 
 function bindEventListeners() {
 	window.onresize = resizeCanvas;
-    // window.onclick = mainListener;
-    window.ondblclick = function (e){e.preventDefault();console.log("dbl click")}
-    window.oncontextmenu = mainListener;
 
     document.getElementById("canvas").addEventListener("click", mainListener);
+    document.getElementById("canvas").addEventListener("dblclick", function (e){e.preventDefault();console.log("dbl click")});
+    document.getElementById("canvas").addEventListener("contextmenu", function (e){e.preventDefault();console.log("rt click")});
+
     Array.from(document.querySelectorAll(".startbutton")).forEach(element => {
         element.addEventListener("click", gameManager.startButtonEvent);
     });

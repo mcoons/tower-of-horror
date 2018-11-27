@@ -12,18 +12,9 @@ var sound_badselect = new Howl({src: ['./sounds/badselect.wav']});
 function soundBadSelect(){sound_badselect.play()}
 
 
-
-
-
-
-
 var sound_explode = new Howl({src: ['./sounds/explode.wav']});
 function soundEplode(){sound_explode.play()}
 
-var click = new Howl({src: ['./sounds/click.wav']});
-function soundClick(){click.play()}
 
-var click = new Howl({src: ['./sounds/click.wav']});
-function soundClick(){click.play()}
 
 

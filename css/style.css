@@ -104,6 +104,11 @@ h3 {
     background-image: linear-gradient(to bottom right, rgb(223, 223, 223),rgb(167, 167, 167) );
 }
 
+.surrenderbutton {
+    position:absolute;
+    bottom:0;
+    margin-bottom: 10px;
+}
 
 #scorelist{
     display:flex;

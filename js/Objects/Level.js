@@ -51,16 +51,6 @@ function Level(scene, eventBus, pos){
             level.rotation.y = newRot;
         }
     }
-
-
-    // function animationStartingBusCallback(){
-    //     animationInProgress = true
-    // }
-
-
-    // function animationEndedBusCallback(){
-    //     animationInProgress = false;
-    // }
     
     function explosionStartingBusCallback(){
         explosionInProgress = true

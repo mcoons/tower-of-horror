@@ -2,17 +2,19 @@
 <html >
 	<head>
 		<meta charset="UTF-8">
-		<title>Tower of Horror</title> 		
+		<title>Tower of Three</title> 		
 		<link rel="stylesheet" href="./css/style.css"> 
 	</head>
 
 	<body>
 		<canvas id="canvas"></canvas>
+		<div id="surrenderbutton" class="surrenderbutton">
+			<button id="playagainbutton" class="playagainbutton button">Surrender</button>
+		</div>
 
 		<div id="score" class="score hidden">
 			<h1 id="scorevalue">0</h1>
 		</div>
-
 
 		<div id="splash" class="splash hidden">
 			<div class="header">
@@ -27,9 +29,7 @@
 			</div>
 		</div>
 
-		<div id="backdrop" class="backdrop ">
-
-		</div>
+		<div id="backdrop" class="backdrop "></div>
 
 		<div id="instructions" class="instructions hidden">
 			<div class="header">
@@ -74,7 +74,6 @@
 				</h2>
 				<button id="playagainbutton" class="playagainbutton button">Play Again</button>
 				<!-- <button id="quitbutton" class="quitutton button">Quit</button> -->
-
 			</div>
 		</div>		
 
@@ -87,7 +86,6 @@
 				<button id="continueutton" class="continuebutton button">Continue</button>
 				<button id="startoverbutton" class="startover button">Start Over</button>
 				<button id="quitbutton" class="quitbutton button">Quit</button>
-
 			</div>
 		</div>		
 		
@@ -100,7 +98,6 @@
 			</div>
 		</div>		
 
-		
 		<script src='./js/lib/three.min.js'></script>
 		<script src='./js/lib/GrabBag.js'></script>
 		<script src='./js/lib/EventBus.js'></script>
