@@ -1,4 +1,3 @@
-
 function GameManager(canvas) {
 
     var gameState = new GameState();
@@ -16,7 +15,6 @@ function GameManager(canvas) {
     var sceneObjects = createSceneObjects(scene);
     var explosionInProgress = false;
 
-
     const apiurl = "https://agile-citadel-53491.herokuapp.com/api";
 
     window.scene = scene;
@@ -25,9 +23,6 @@ function GameManager(canvas) {
     .then(response => response.json())
     .then(response => gameState.scores = response.scores)
     .then(() => buildScoreList())
-
-    // console.log("---  gamestate in global ---")
-    // console.log(gameState);
 
     function buildScene() {
         const scene = new THREE.Scene();
@@ -40,7 +35,6 @@ function GameManager(canvas) {
     eventBus.subscribe("selected", selectedBusCallback);
     eventBus.subscribe('removed', removedBusCallback);
     eventBus.subscribe('clear', clearBusCallback);
-    // eventBus.subscribe('animationEnded', animationEndedBusCallback);
     eventBus.subscribe('explosion', explosionBusCallback);
     eventBus.subscribe('explosionStarting', explosionStartingBusCallback);
     eventBus.subscribe('explosionEnded', explosionEndedBusCallback);
@@ -89,8 +83,6 @@ function GameManager(canvas) {
         }
                 
         new Background(scene, eventBus, levelObjects);
-        // console.log("--- levelObjects ---");
-        // console.log(levelObjects);
         return sceneObjects;
     }
 
@@ -105,7 +97,6 @@ function GameManager(canvas) {
 
         for(s = 0; s < 5; s++){
             let recorddiv = document.createElement("div");
-            // recorddiv.id = "recorddiv";
             recorddiv.classList.add("recorddiv");
 
             let namediv = document.createElement("div");
@@ -130,7 +121,6 @@ function GameManager(canvas) {
             h2.innerText = "Your Current Score"
 
             let recorddiv = document.createElement("div");
-            // recorddiv.id = "recorddiv";
             recorddiv.classList.add("recorddiv");
 
             let namediv = document.createElement("div");
@@ -147,15 +137,11 @@ function GameManager(canvas) {
             recorddiv.append( scorediv );
             scorelist.append( h2 );
             scorelist.append( recorddiv );
-
-            
         }
     }
 
-
     document.getElementById("savebutton").addEventListener("click",submitForm);
     document.getElementById("playagainbutton").addEventListener("click",restart);
-
 
     function restart(){
         window.location.reload();
@@ -190,7 +176,6 @@ function GameManager(canvas) {
     this.update = function() {
         const elapsedTime = clock.getElapsedTime();
 
-        // if (gameState.gameState === "playing")
         sceneObjects.forEach( obj => obj.update(elapsedTime) );
 
         sceneObjects = sceneObjects.filter( subject => subject.del === false );
@@ -234,7 +219,6 @@ function GameManager(canvas) {
                     document.getElementById("score").classList.remove("hidden");
                 break;
                 
-
                 default:
                 break;
             }
@@ -243,19 +227,16 @@ function GameManager(canvas) {
     }
 
     function hideAll(){
-        // document.getElementById("scoreboard").classList.add("hidden");
         document.getElementById("winner").classList.add("hidden");
         document.getElementById("loser").classList.add("hidden");
         document.getElementById("options").classList.add("hidden");
         document.getElementById("splash").classList.add("hidden");
         document.getElementById("instructions").classList.add("hidden");
         document.getElementById("backdrop").classList.add("hidden");
-        // document.getElementById("score").classList.add("hidden");
     }
 
     function selectedBusCallback(){
         gameState.gemsSelected = gameState.gemsSelected + 1;
-        
     }
 
     function removedBusCallback(eventType, material, position){
@@ -271,7 +252,6 @@ function GameManager(canvas) {
     function explosionBusCallback(eventType, material, position){
         let explosion = new Explosion(scene, eventBus, gameState, position.x, position.y, position.z, material);
         sceneObjects.push(explosion);
-    
     }
 
     function clearBusCallback(){
@@ -301,8 +281,6 @@ function GameManager(canvas) {
 
         console.log("--- eventBus info ---");
         console.log(eventBus.eventObjects);
-
-        // gameOverCheck();
     }
 
     function dropGemsBusCallback(){
@@ -331,8 +309,6 @@ function GameManager(canvas) {
             } else {
                 columns[key].forEach( (element, index) => eventBus.post(  element.uuid, "moveto", index));
             }
-        
-        
         }        
     }
 
@@ -373,7 +349,6 @@ function GameManager(canvas) {
         raycaster.setFromCamera(mouse, camera);
         var intersects = raycaster.intersectObjects(scene.children, true);
         (intersects.length > 0) ? intersects[0].object.callback(e) : console.log(sceneObjects);
-        
     }
 
     function submitForm(event){
@@ -404,7 +379,6 @@ function GameManager(canvas) {
 
         gameState.gameState = "splash";
         buildScoreList();
-
     }
 
     function insertScore(newScore){
@@ -425,14 +399,12 @@ function GameManager(canvas) {
                 break;
             }
         }
-        
     }
 
     function animationEndedBusCallback(){
         gameOverCheck();
     }
 
-        
     function explosionStartingBusCallback(){
         explosionInProgress = true
     }
@@ -440,8 +412,6 @@ function GameManager(canvas) {
     function explosionEndedBusCallback(){
         explosionInProgress = false;
     }
-
-
 
     function gameOverCheck(){
         gameOver = false;
@@ -453,6 +423,4 @@ function GameManager(canvas) {
             }
         }
     }
-
-
 }
