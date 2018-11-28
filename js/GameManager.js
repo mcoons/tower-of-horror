@@ -29,7 +29,7 @@ function GameManager(canvas) {
         return scene;
     }
 
-    eventBus.subscribe("info", infoBusCallback);
+    // eventBus.subscribe("info", infoBusCallback);
     eventBus.subscribe("newGem", newGemBusCallback);
     eventBus.subscribe("dropGems", dropGemsBusCallback);
     eventBus.subscribe("selected", selectedBusCallback);
@@ -141,15 +141,17 @@ function GameManager(canvas) {
     }
 
     document.getElementById("savebutton").addEventListener("click",submitForm);
-    document.getElementById("playagainbutton").addEventListener("click",restart);
+    document.getElementById("playagainbutton1").addEventListener("click",restart);
+    document.getElementById("playagainbutton2").addEventListener("click",restart);
 
     function restart(){
+        console.log("restart button clicked")
         window.location.reload();
     }
 
     function clearLevel(){
         eventBus.post("newLevel");
-        infoBusCallback();
+        // infoBusCallback();
 
         if (gameState.level < 20)
             gameState.level += 1;
@@ -217,6 +219,7 @@ function GameManager(canvas) {
 
                 case "playing":
                     document.getElementById("score").classList.remove("hidden");
+                    document.getElementById("surrenderbutton").classList.remove("hidden");
                 break;
                 
                 default:
@@ -233,6 +236,8 @@ function GameManager(canvas) {
         document.getElementById("splash").classList.add("hidden");
         document.getElementById("instructions").classList.add("hidden");
         document.getElementById("backdrop").classList.add("hidden");
+        document.getElementById("surrenderbutton").classList.add("hidden");
+
     }
 
     function selectedBusCallback(){

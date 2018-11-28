@@ -1,30 +1,5 @@
 function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, material){
-    //     const materials = [
-    //         matMaterial,
-    //         matMaterial2,
-    //         matMaterial3,
-    //         matMaterial4,
-    //         matMaterial5,
-    //         matMaterial6,
-    //         matMaterial7,
-    //         matMaterial8,
-    //         matMaterial9,
 
-    //     new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
-    //     new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
-    //     new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
-    //     new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
-    //     new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
-    //     new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
-    //     new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
-    //     new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
-    //     new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
-    //     new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
-    // ];
-
-    // var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
-
-    // var animationInProgress = false;
     var explosionInProgress = false;
     var rotationInProgress = false;
     var droppingInProgress = false;
@@ -53,7 +28,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
     scene.add(gem);
 
     levelObjects[y].object.add(gem);
-
   
     subscribe();
 
@@ -92,7 +66,7 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
 
                 return;
             }
-            // x = A + t * (B - A)
+            // x = A + t * (B - A)   // lerp formula
 
             let newPos = this.startDropping + elapsed * (this.endDropping - this.startDropping) * ( 1/ this.droppingLength);
             gem.position.y = newPos;
@@ -118,7 +92,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
                 eventBus.post('removed', my.material, worldPosition);
                 eventBus.post('dropGems');
             } else if (my.selected && selectedCount === 1){
-                console.log("EEEERRRRRPPPP");
                 soundBadSelect();
                 gem.material = badSelectedMaterial; // material to red
 
@@ -209,7 +182,6 @@ function Gem(scene, eventBus, gameState, levelObjects, x, y, z, geometry, materi
             gem.parent.remove(gem);
         }
     }
-
 
     function explosionStartingBusCallback(){
         explosionInProgress = true

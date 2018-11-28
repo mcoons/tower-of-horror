@@ -12,6 +12,5 @@ function Lighting(scene) {
 	scene.add(light);
 
 	this.update = function(time) {
-		// light.position.x = (Math.sin(time))*150;
 	}
 }

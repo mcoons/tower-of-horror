@@ -1,13 +1,10 @@
 
 function Level(scene, eventBus, pos){
 
-    // var animationInProgress = false;
     var explosionInProgress = false;
     var rotationInProgress = false;
     var droppingInProgress = false;
 
-    // eventBus.subscribe('animationStarting', animationStartingBusCallback);
-    // eventBus.subscribe('animationEnded', animationEndedBusCallback);
     eventBus.subscribe('explosionStarting', explosionStartingBusCallback);
     eventBus.subscribe('explosionEnded', explosionEndedBusCallback);
     eventBus.subscribe('rotationStarting', rotationStartingBusCallback);
@@ -39,13 +36,12 @@ function Level(scene, eventBus, pos){
             if ( elapsed >= this.rotationLength ) {
                 this.rotating = false;
                 level.rotation.y = this.endRotation;
-                // eventBus.post('animationEnded');
                 eventBus.post('rotationEnded');
 
                 eventBus.post('dropGems');
                 return;
             }
-            // x = A + t * (B - A)
+            // x = A + t * (B - A) // lerp formula
 
             let newRot = this.startRotation + elapsed * (this.endRotation - this.startRotation) * ( 1/ this.rotationLength);
             level.rotation.y = newRot;
@@ -78,7 +74,6 @@ function Level(scene, eventBus, pos){
 
     function rightArrowClick(event){
         if (explosionInProgress || rotationInProgress || droppingInProgress) return;
-        // eventBus.post('animationStarting');
         eventBus.post('rotationStarting');
         soundRotate();
 
@@ -94,7 +89,6 @@ function Level(scene, eventBus, pos){
 
     function leftArrowClick(event){
         if (explosionInProgress || rotationInProgress || droppingInProgress) return;
-        // eventBus.post('animationStarting');
         eventBus.post('rotationStarting');
         soundRotate();
         if (my.rotating) return; 

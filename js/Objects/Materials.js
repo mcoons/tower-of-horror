@@ -1,8 +1,6 @@
 var selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, name: 6 });
 var badSelectedMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 6 });
 
-
-
 var matDiffuse = new THREE.TextureLoader().load( 'textures/metal1/Metal_Grill_001_COLOR.jpg' );
 matDiffuse.repeat.set( 1, 2 );
 
@@ -87,14 +85,14 @@ const materials = [
     matMaterial8,
     matMaterial9,
 
-new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
-new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
-new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
-new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
-new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
-new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
-new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
-new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
-new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
-new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
+    new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, name: 0 }),
+    new THREE.MeshStandardMaterial({ color: 0x00ff00, flatShading: true, name: 1 }),
+    new THREE.MeshStandardMaterial({ color: 0x0000ff, flatShading: true, name: 2 }),
+    new THREE.MeshStandardMaterial({ color: 0x00ffff, flatShading: true, name: 3 }),
+    new THREE.MeshStandardMaterial({ color: 0xffff00, flatShading: true, name: 4 }),
+    new THREE.MeshStandardMaterial({ color: 0xff00ff, flatShading: true, name: 5 }),
+    new THREE.MeshStandardMaterial({ color: 0x99ff00, flatShading: true, name: 6 }),
+    new THREE.MeshStandardMaterial({ color: 0x0099ff, flatShading: true, name: 7 }),
+    new THREE.MeshStandardMaterial({ color: 0xff0099, flatShading: true, name: 8 }),
+    new THREE.MeshStandardMaterial({ color: 0x9900b0, flatShading: true, name: 9 })
 ];

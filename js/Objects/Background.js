@@ -2,20 +2,11 @@
 function Background(scene, eventBus, levelObjects) {
     this.del = false;
 
-    // Diffuse - COLOR *
-    // Normal - NORM *
-    // Displacement - DISP *
-    // Roughness - ROUGH *
-    // Ambient Occlusion - OCC *
-    // Mask - MASK
-
     var planeDiffuse = new THREE.TextureLoader().load( 'textures/metal2/Metal_Pattern_001_COLOR.jpg' );
     var planeDisplacement = new THREE.TextureLoader().load( 'textures/metal2/Metal_Pattern_001_DISP.png' );
     var planeNormal = new THREE.TextureLoader().load( 'textures/metal2/Metal_Pattern_001_NORM.jpg' );
     var planeRoughness = new THREE.TextureLoader().load( 'textures/metal2/Metal_Pattern_001_DISP_ROUGH.jpg' );
     var planeOCC = new THREE.TextureLoader().load( 'textures/metal2/Metal_Pattern_001_OCC.jpg' );
-    // var planeMask = new THREE.TextureLoader().load( 'textures/metal2/Metal_Pattern_001_MASK.jpg' );
-
 
     var planeMaterial = new THREE.MeshStandardMaterial( {map: planeDiffuse } );
     planeMaterial.transparent = true;
@@ -23,7 +14,6 @@ function Background(scene, eventBus, levelObjects) {
     planeMaterial.normalMap = planeNormal;
     planeMaterial.roughnessMap = planeRoughness;
     planeMaterial.aoMap = planeOCC;
-    // planeMaterial.alphaMap = planeMask;
 
     // bottom
     let plane = new THREE.Mesh( new THREE.PlaneGeometry( 15, 15 ), planeMaterial );
@@ -67,23 +57,8 @@ function Background(scene, eventBus, levelObjects) {
     plane.position.y = 2.5;
     scene.add( plane );
 
-
-
     for (let x = -1; x < 2; x++){
         for (let z = -1; z < 2; z++){
-
-            // // bottom
-            // plane = new THREE.Mesh( new THREE.PlaneGeometry( .9, .9 ),  new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true}));
-            // plane.name = "column plane";
-            // // plane.callback = backgroundClicked;
-            // plane.rotation.x = - 90 * ( Math.PI / 180 );
-            // plane.position.x = x;
-            // plane.position.y = -.4;
-            // plane.position.z = z;
-            // plane.callback = function(){};
-            // scene.add( plane );
-            // levelObjects[0].object.add(plane);
-
 
             // bottom
             box = new THREE.Mesh( new THREE.BoxGeometry( .7, .05, .7 ),  new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true}));
@@ -94,15 +69,8 @@ function Background(scene, eventBus, levelObjects) {
             box.callback = function(){};
             scene.add( box );
             levelObjects[0].object.add(box);
-
-
-
-
-
-            }
-
-     }
- 
+        }
+    }
 
 	this.update = function(time) {}
 

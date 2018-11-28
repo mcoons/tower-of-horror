@@ -1,6 +1,5 @@
 function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
 {
-
     this.del = false;
     var my=this;
     var color =  materials[mycolor].color;
@@ -53,7 +52,6 @@ function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
             eventBus.post('explosionEnded');
         }
 
-
         if (this.status == true){
             var pCount = totalObjects;
             while(pCount--) {
@@ -65,5 +63,4 @@ function Explosion(scene, eventBus, gameState, x,y,z, mycolor)
             this.object.geometry.verticesNeedUpdate = true;
         }
     }
-  
 }
